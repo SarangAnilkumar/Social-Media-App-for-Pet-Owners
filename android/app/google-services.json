@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "790316666601",
+    "project_id": "newtry-3a934",
+    "storage_bucket": "newtry-3a934.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790316666601:android:c170d7b6e7bbc0dd0aaa78",
+        "android_client_info": {
+          "package_name": "com.example.untitled1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "790316666601-tv3ffvl9921133qv749rgfoqt5bud28b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.untitled1",
+            "certificate_hash": "feea2c41f1047fa9f272453f64407fc1612b4810"
+          }
+        },
+        {
+          "client_id": "790316666601-dkme6mm18cu38g74an5su81ieqbv95qa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvy0rm_dkL57QVm-cbOZJUWWZwk45fpf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "790316666601-dkme6mm18cu38g74an5su81ieqbv95qa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
