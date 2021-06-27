@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:untitled1/PetStuff/PetProfile.dart';
+import 'package:untitled1/PetStuff/PetProfile1.dart';
 import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/EditProfilePage.dart';
 import 'package:untitled1/pages/Home.dart';
@@ -299,6 +301,8 @@ class _ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           createProfileTopView(),
           Divider(),
+          myPet(),
+          Divider(),
           createListAndGridPostOrientation(),
           Divider(
             height: 0.0,
@@ -307,6 +311,63 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
     );
+  }
+
+  myPet() {
+    return Column(
+      children: [
+        Text("My Pets", style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold,
+            fontSize: 15), ),
+        SizedBox(height: 10,),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              TextButton(
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile()));},
+                child: CircleAvatar(
+                  radius: 35,
+                  backgroundImage: AssetImage("assets/images/Husky.jpg"),
+                ),
+              ),
+              SizedBox(height: 10,),
+              TextButton(
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile1()));},
+                child: CircleAvatar(
+                  radius: 35,
+                  backgroundImage: AssetImage("assets/images/goldenretriever.jpg"),
+                ),
+              ),
+              SizedBox(height: 10,),
+              TextButton(
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile()));},
+                child: CircleAvatar(
+                  radius: 35,
+                  backgroundImage: AssetImage("assets/images/Husky.jpg"),
+                ),
+              ),
+              SizedBox(height: 10,),
+              TextButton(
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile()));},
+                child: CircleAvatar(
+                  radius: 35,
+                  backgroundImage: AssetImage("assets/images/Husky.jpg"),
+                ),
+              ),
+              SizedBox(height: 10,),
+              TextButton(
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile()));},
+                child: CircleAvatar(
+                  radius: 35,
+                  backgroundImage: AssetImage("assets/images/Husky.jpg"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
   }
 
   displayProfilePost() {
