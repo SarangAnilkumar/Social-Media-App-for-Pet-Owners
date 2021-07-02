@@ -27,10 +27,10 @@ class _EditProfilePageState extends State<EditProfilePage>
 
   void initState(){
     super.initState();
-    GetAndDisplayUserInfo();
+    getAndDisplayUserInfo();
   }
 
-  GetAndDisplayUserInfo() async {
+  getAndDisplayUserInfo() async {
     setState(() {
       loading = true;
     });
@@ -59,7 +59,7 @@ class _EditProfilePageState extends State<EditProfilePage>
         "bio" : bioTextEditingController.text,
       });
 
-      SnackBar successSnackBar = SnackBar(content: Text("Profile has been updated sucessfully"));
+      SnackBar successSnackBar = SnackBar(content: Text("Profile has been updated successfully"));
       _scaffoldGlobalKey.currentState.showSnackBar(successSnackBar);
     }
   }
@@ -95,7 +95,7 @@ class _EditProfilePageState extends State<EditProfilePage>
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 29.0, left: 50.0, right: 50.0),
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: updateUserData,
                     child: Text(
                       "Update",

@@ -324,7 +324,11 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Row(
             children: [
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile()));},
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile(
+                  petType: "Siberian Husky",
+                  image: AssetImage("assets/images/Husky.jpg"),
+                  petBio: "The Siberian Husky is a medium-sized working sled dog breed. The breed belongs to the Spitz genetic family. It is recognizable by its thickly furred double coat, erect triangular ears, and distinctive markings, and is smaller than the similar-looking Alaskan Malamute.",
+                )));},
                 child: CircleAvatar(
                   radius: 35,
                   backgroundImage: AssetImage("assets/images/Husky.jpg"),
@@ -340,26 +344,38 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               SizedBox(height: 10,),
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile()));},
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile(
+                  petType: "Rottweiler",
+                  image: AssetImage("assets/images/rottweiler.jpg") ,
+                  petBio: "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
+                )));},
                 child: CircleAvatar(
                   radius: 35,
-                  backgroundImage: AssetImage("assets/images/Husky.jpg"),
+                  backgroundImage: AssetImage("assets/images/rottweiler.jpg"),
                 ),
               ),
               SizedBox(height: 10,),
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile()));},
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile(
+                  petType: "Samoyed",
+                  image: AssetImage("assets/images/Samoyed.jpg"),
+                  petBio: "The Samoyed is a breed of medium-sized herding dogs with thick, white, double-layer coats. They are related to the laika, a spitz-type dog. It takes its name from the Samoyedic peoples of Siberia. These nomadic reindeer herders bred the fluffy white dogs to help with herding.",
+                )));},
                 child: CircleAvatar(
                   radius: 35,
-                  backgroundImage: AssetImage("assets/images/Husky.jpg"),
+                  backgroundImage: AssetImage("assets/images/Samoyed.jpg"),
                 ),
               ),
               SizedBox(height: 10,),
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile()));},
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile(
+                  petType: "Golden Retriever",
+                  image: AssetImage("assets/images/photo-1510771463146-e89e6e86560e.jpg"),
+                  petBio: "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
+                )));},
                 child: CircleAvatar(
                   radius: 35,
-                  backgroundImage: AssetImage("assets/images/Husky.jpg"),
+                  backgroundImage: AssetImage("assets/images/photo-1510771463146-e89e6e86560e.jpg"),
                 ),
               ),
             ],

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class PetProfile extends StatelessWidget {
 
-  //
+  String petType;
+  String petBio;
+  AssetImage image;
 
-  PetProfile(/*{@required this.pet}*/);
+  PetProfile({@required this.petType, this.image, this.petBio});
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +28,12 @@ class PetProfile extends StatelessWidget {
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: Icon(
-              Icons.more_vert,
-              color: Colors.grey[800],
+            child: GestureDetector(
+              onTap: () => handleDeletePet(context),
+              child: Icon(
+                Icons.more_vert,
+                color: Colors.grey[800],
+              ),
             ),
           ),
         ],
@@ -46,7 +51,7 @@ class PetProfile extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("assets/images/Husky.jpg"),
+                        image: image,
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.only(
@@ -77,8 +82,8 @@ class PetProfile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Siberian Husky",
-                              style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold,
+                                petType,
+                                style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold,
                                     fontSize: 24)
                             ),
                             SizedBox(
@@ -97,7 +102,7 @@ class PetProfile extends StatelessWidget {
                                 Text(
                                   "Bangalore, Karnataka",
                                   style: TextStyle(
-                                    color: Colors.grey[600],
+                                    color: Colors.grey[500],
                                     fontSize: 14,
                                   ),
                                 ),
@@ -136,9 +141,9 @@ class PetProfile extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      "The Siberian Husky is a medium-sized working sled dog breed. The breed belongs to the Spitz genetic family. It is recognizable by its thickly furred double coat, erect triangular ears, and distinctive markings, and is smaller than the similar-looking Alaskan Malamute.",
+                      petBio,
                       style: TextStyle(
-                        color: Colors.grey[800],
+                        color: Colors.grey[500],
                         fontSize: 14,
                       ),
                     ),
@@ -162,8 +167,8 @@ class PetProfile extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.grey[200],
-            width: 1,
+            color: Colors.grey[400],
+            width: 1.5,
           ),
           borderRadius: BorderRadius.all(
             Radius.circular(10),
@@ -190,5 +195,29 @@ class PetProfile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  handleDeletePet(BuildContext mcontext){
+    return showDialog(
+        context: mcontext,
+        builder: (context) {
+          return SimpleDialog(title: Text("Remove this pet ?"),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  print("Pet Deleted");
+                  Navigator.pop(context);
+                  //deletePost();
+                },
+                child: Text('Remove Pet',
+                  style: TextStyle(color: Colors.red),),
+              ),
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+            ],
+          );
+        });
   }
 }

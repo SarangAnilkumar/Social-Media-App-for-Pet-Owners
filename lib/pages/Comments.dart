@@ -96,7 +96,7 @@ class CommentsState extends State<Comments> {
             ),
             trailing: OutlinedButton(
               onPressed: addComment,
-              child: Text("Post"),
+              child: Text("Post", style: TextStyle(color: Colors.pink),),
             ),
           )
         ],

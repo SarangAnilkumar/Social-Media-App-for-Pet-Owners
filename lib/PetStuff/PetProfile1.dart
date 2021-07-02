@@ -31,7 +31,7 @@ class _PetProfile1State extends State<PetProfile1> {
           Padding(
             padding: EdgeInsets.only(right: 16),
             child: GestureDetector(
-              onTap: () {print('options');},
+              onTap: () => handleDeletePet(context),
               child: Icon(
                 Icons.more_vert,
                 color: Colors.grey[800],
@@ -116,14 +116,14 @@ class _PetProfile1State extends State<PetProfile1> {
               children: <Widget>[
                 SizedBox(height: 40,),
                 _titleSection(),
-                SizedBox(height: 30,),
+                SizedBox(height: 40,),
                 _infoSection(),
-                SizedBox(height: 30,),
+                SizedBox(height: 40,),
                 _actionSection(),
                 SizedBox(height: 60,),
                 OutlinedButton(
                     onPressed: () {print('Edit Pet Profile Page');},
-                    child: Text("Edit Pet Profile"))
+                    child: Text("Edit Pet Profile",  style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 15)))
               ],
             ),
           ),
@@ -189,7 +189,7 @@ class _PetProfile1State extends State<PetProfile1> {
       children: <Widget>[
         Text(
             title,
-            style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w300,
+            style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w500,
               fontSize: 14, color: Colors.pink)
         ),
         SizedBox(
@@ -227,5 +227,29 @@ class _PetProfile1State extends State<PetProfile1> {
         ),
       ],
     );
+  }
+
+  handleDeletePet(BuildContext mcontext){
+    return showDialog(
+        context: mcontext,
+        builder: (context) {
+          return SimpleDialog(title: Text("Remove this pet ?"),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  print("Pet Deleted");
+                  Navigator.pop(context);
+                  //deletePost();
+                },
+                child: Text('Remove Pet',
+                  style: TextStyle(color: Colors.red),),
+              ),
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+            ],
+          );
+        });
   }
 }

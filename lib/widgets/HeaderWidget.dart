@@ -4,15 +4,15 @@ import 'package:untitled1/pages/UploadPage.dart';
 
 AppBar header(context, {bool isAppTitle=false, String titleText, disappearedBackButton=false}) {
   return AppBar(
-      leading: isAppTitle ? IconButton(
-        icon: Icon(Icons.camera_alt),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => UploadPage(currentUser: currentUser,)));
-        },
-      ):null,
+    leading: isAppTitle ? IconButton(
+      icon: Icon(Icons.camera_alt),
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => UploadPage(currentUser: currentUser,)));
+      },
+    ):null,
     iconTheme: IconThemeData(
       color: Colors.pink,
     ),

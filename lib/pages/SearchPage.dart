@@ -20,7 +20,7 @@ class _SearchPageState extends State<SearchPage>
 
   emptyTheTextFormField() {
     searchTextEditingController.clear();
-    displayNoSearchResultsScreen;
+    displayNoSearchResultsScreen();
   }
 
   controlSearching(String str) {

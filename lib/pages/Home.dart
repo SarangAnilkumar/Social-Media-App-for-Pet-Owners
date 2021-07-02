@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled1/PetStuff/PetTinder.dart';
 import 'package:untitled1/pages/ActivityFeed.dart';
 import 'package:untitled1/pages/Pet.dart';
 import 'package:untitled1/pages/ProfilePage.dart';
@@ -57,6 +58,7 @@ class _Home extends State<Home>
           TimeLine(currentUser: currentUser),
           SearchPage(),
           Pet(),
+          PetTinder(),
           ActivityFeed(),
           ProfilePage(userProfileId: currentUser?.id,),
         ],
@@ -72,7 +74,8 @@ class _Home extends State<Home>
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home)),
           BottomNavigationBarItem(icon: Icon(Icons.search)),
-          BottomNavigationBarItem(icon: Icon(Icons.pets_rounded, size: 50.0,)),
+          BottomNavigationBarItem(icon: Icon(Icons.pets_rounded)),
+          BottomNavigationBarItem(icon: Icon(Icons.local_fire_department)),
           BottomNavigationBarItem(icon: Icon(Icons.favorite)),
           BottomNavigationBarItem(icon: Icon(Icons.person)),
         ],
