@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class PetProfile1 extends StatefulWidget {
+  String petType;
+  String petBio;
+  AssetImage image;
+
+  PetProfile1({@required this.petType, this.image, this.petBio});
   @override
   _PetProfile1State createState() => _PetProfile1State();
 }
@@ -49,7 +54,7 @@ class _PetProfile1State extends State<PetProfile1> {
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/goldenretriever.jpg'),
+                  image: widget.image,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -152,7 +157,7 @@ class _PetProfile1State extends State<PetProfile1> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
+              widget.petBio,
               style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 14,),
                 textAlign: TextAlign.center,
 
@@ -219,7 +224,7 @@ class _PetProfile1State extends State<PetProfile1> {
           height: 8,
         ),
         Text(
-          'Golden Retriever',
+          widget.petType,
           style: TextStyle(
             fontStyle: FontStyle.italic,
             fontSize: 16,

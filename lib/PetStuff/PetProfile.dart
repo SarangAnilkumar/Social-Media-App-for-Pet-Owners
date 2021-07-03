@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class PetProfile extends StatelessWidget {
+class PetProfile extends StatefulWidget {
 
   String petType;
   String petBio;
@@ -8,6 +8,11 @@ class PetProfile extends StatelessWidget {
 
   PetProfile({@required this.petType, this.image, this.petBio});
 
+  @override
+  State<PetProfile> createState() => _PetProfileState();
+}
+
+class _PetProfileState extends State<PetProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +56,7 @@ class PetProfile extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: image,
+                        image: widget.image,
                         fit: BoxFit.cover,
                       ),
                       borderRadius: BorderRadius.only(
@@ -82,7 +87,7 @@ class PetProfile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                petType,
+                                widget.petType,
                                 style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold,
                                     fontSize: 24)
                             ),
@@ -141,7 +146,7 @@ class PetProfile extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      petBio,
+                      widget.petBio,
                       style: TextStyle(
                         color: Colors.grey[500],
                         fontSize: 14,
@@ -159,6 +164,7 @@ class PetProfile extends StatelessWidget {
       ),
     );
   }
+
   buildPetFeature(String value, String feature, context){
     return Expanded(
       child: Container(
