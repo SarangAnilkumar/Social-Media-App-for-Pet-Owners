@@ -117,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.only(top: 13.0),
                 child: Text(
-                  user.username,
+                  (user.username != null) ? user.username : 'Null',
                   style: Theme.of(context)
                       .textTheme
                       .headline1
@@ -183,7 +183,9 @@ class _ProfilePageState extends State<ProfilePage> {
     bool ownProfile = currentOnlineUserId == widget.userProfileId;
     if (ownProfile) {
       return editProfile(
-          title: "Edit Profile", performFunction: editUserProfile,);
+        title: "Edit Profile",
+        performFunction: editUserProfile,
+      );
     } else if (isFollowing) {
       return editProfile(
           title: "Unfollow", performFunction: handleUnfollowUser);
@@ -294,9 +296,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: header(
-        context,
-        titleText: "Profile", disappearedBackButton: false),
+      appBar:
+          header(context, titleText: "Profile", disappearedBackButton: false),
       body: ListView(
         children: <Widget>[
           createProfileTopView(),
@@ -316,78 +317,135 @@ class _ProfilePageState extends State<ProfilePage> {
   myPet() {
     return Column(
       children: [
-        Text("My Pets", style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold,
-            fontSize: 15), ),
-        SizedBox(height: 10,),
+        Text(
+          "My Pets",
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1
+              .copyWith(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+        SizedBox(
+          height: 10,
+        ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile(
-                  petType: "Siberian Husky",
-                  image: AssetImage("assets/images/Husky.jpg"),
-                  petBio: "The Siberian Husky is a medium-sized working sled dog breed. The breed belongs to the Spitz genetic family. It is recognizable by its thickly furred double coat, erect triangular ears, and distinctive markings, and is smaller than the similar-looking Alaskan Malamute.",
-                )));},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PetProfile(
+                                petType: "Siberian Husky",
+                                image: AssetImage("assets/images/Husky.jpg"),
+                                petBio:
+                                    "The Siberian Husky is a medium-sized working sled dog breed. The breed belongs to the Spitz genetic family. It is recognizable by its thickly furred double coat, erect triangular ears, and distinctive markings, and is smaller than the similar-looking Alaskan Malamute.",
+                              )));
+                },
                 child: CircleAvatar(
                   radius: 35,
                   backgroundImage: AssetImage("assets/images/Husky.jpg"),
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile1(
-                  petType: "Golden Retriever",
-                  image: AssetImage("assets/images/goldenretriever.jpg"),
-                  petBio: "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
-                )));},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PetProfile1(
+                                petType: "Golden Retriever",
+                                image: AssetImage(
+                                    "assets/images/goldenretriever.jpg"),
+                                petBio:
+                                    "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
+                              )));
+                },
                 child: CircleAvatar(
                   radius: 35,
-                  backgroundImage: AssetImage("assets/images/goldenretriever.jpg"),
+                  backgroundImage:
+                      AssetImage("assets/images/goldenretriever.jpg"),
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile(
-                  petType: "Rottweiler",
-                  image: AssetImage("assets/images/rottweiler.jpg") ,
-                  petBio: "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
-                )));},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PetProfile(
+                                petType: "Rottweiler",
+                                image:
+                                    AssetImage("assets/images/rottweiler.jpg"),
+                                petBio:
+                                    "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
+                              )));
+                },
                 child: CircleAvatar(
                   radius: 35,
                   backgroundImage: AssetImage("assets/images/rottweiler.jpg"),
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile(
-                  petType: "Samoyed",
-                  image: AssetImage("assets/images/Samoyed.jpg"),
-                  petBio: "The Samoyed is a breed of medium-sized herding dogs with thick, white, double-layer coats. They are related to the laika, a spitz-type dog. It takes its name from the Samoyedic peoples of Siberia. These nomadic reindeer herders bred the fluffy white dogs to help with herding.",
-                )));},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PetProfile(
+                                petType: "Samoyed",
+                                image: AssetImage("assets/images/Samoyed.jpg"),
+                                petBio:
+                                    "The Samoyed is a breed of medium-sized herding dogs with thick, white, double-layer coats. They are related to the laika, a spitz-type dog. It takes its name from the Samoyedic peoples of Siberia. These nomadic reindeer herders bred the fluffy white dogs to help with herding.",
+                              )));
+                },
                 child: CircleAvatar(
                   radius: 35,
                   backgroundImage: AssetImage("assets/images/Samoyed.jpg"),
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile(
-                  petType: "Golden Retriever",
-                  image: AssetImage("assets/images/photo-1510771463146-e89e6e86560e.jpg"),
-                  petBio: "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
-                )));},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PetProfile(
+                                petType: "Golden Retriever",
+                                image: AssetImage(
+                                    "assets/images/photo-1510771463146-e89e6e86560e.jpg"),
+                                petBio:
+                                    "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
+                              )));
+                },
                 child: CircleAvatar(
                   radius: 35,
-                  backgroundImage: AssetImage("assets/images/photo-1510771463146-e89e6e86560e.jpg"),
+                  backgroundImage: AssetImage(
+                      "assets/images/photo-1510771463146-e89e6e86560e.jpg"),
                 ),
               ),
               TextButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => PetProfile1(
-                  petType: "Rottweiler",
-                  image: AssetImage("assets/images/rottweiler.jpg") ,
-                  petBio: "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
-                )));},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PetProfile1(
+                                petType: "Rottweiler",
+                                image:
+                                    AssetImage("assets/images/rottweiler.jpg"),
+                                petBio:
+                                    "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
+                              )));
+                },
                 child: CircleAvatar(
                   radius: 35,
                   backgroundImage: AssetImage("assets/images/rottweiler.jpg"),
@@ -398,7 +456,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ],
     );
-
   }
 
   displayProfilePost() {
@@ -477,16 +534,12 @@ class _ProfilePageState extends State<ProfilePage> {
         IconButton(
           onPressed: () => setOrientation("grid"),
           icon: Icon(Icons.grid_on),
-          color: postOrientation == "grid"
-              ? Colors.pink
-              : Colors.grey,
+          color: postOrientation == "grid" ? Colors.pink : Colors.grey,
         ),
         IconButton(
           onPressed: () => setOrientation("list"),
           icon: Icon(Icons.list),
-          color: postOrientation == "list"
-              ? Colors.pink
-              : Colors.grey,
+          color: postOrientation == "list" ? Colors.pink : Colors.grey,
         ),
       ],
     );

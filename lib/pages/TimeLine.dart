@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 
 class TimeLine extends StatefulWidget {
   final useri currentUser;
-  TimeLine({ this.currentUser });
+  TimeLine({this.currentUser});
   @override
   _TimeLineState createState() => _TimeLineState();
 }
@@ -27,45 +27,51 @@ class _TimeLineState extends State<TimeLine> {
 
   getTimeline() async {
     //NEED TO CHANGE
-    QuerySnapshot snapshot = await timelineReference.doc('timeline').collection('timeline').orderBy("timestamp", descending: true).get();
-    List<Post> posts = snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
+    QuerySnapshot snapshot = await timelineReference
+        .doc('timeline')
+        .collection('timeline')
+        .orderBy("timestamp", descending: true)
+        .get();
+    List<Post> posts =
+        snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
     setState(() {
       this.posts = posts;
     });
   }
 
   getFollowing() async {
-    QuerySnapshot snapshot = await followingReference.doc(currentUser.id).collection('userFollowing').get();
+    QuerySnapshot snapshot = await followingReference
+        .doc(currentUser.id)
+        .collection('userFollowing')
+        .get();
     setState(() {
       followingList = snapshot.docs.map((doc) => doc.id).toList();
     });
-
-
   }
 
-  buildTimeline(){
-    if(posts == null) {
+  buildTimeline() {
+    if (posts == null) {
       return circularProgress();
     }
     return ListView(children: posts);
   }
 
   logoutUser() async {
-
     await gSignIn.signOut();
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> TestLogin()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => TestLogin()));
   }
-
-
 
   @override
   Widget build(context) {
     return Scaffold(
-      appBar: header(context, isAppTitle: true,),
-      body: RefreshIndicator(
-        onRefresh: () => getTimeline(),
-        child: buildTimeline(),
-      )
-    );
+        appBar: header(
+          context,
+          isAppTitle: true,
+        ),
+        body: RefreshIndicator(
+          onRefresh: () => getTimeline(),
+          child: buildTimeline(),
+        ));
   }
 }

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:untitled1/widgets/HeaderWidget.dart';
 import 'package:flutter/material.dart';
 
+import 'TestLogin.dart';
+
 class CreateAccountPage extends StatefulWidget {
   @override
   _CreateAccountPageState createState() => _CreateAccountPageState();
@@ -11,27 +13,32 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String username;
+  String tempUsername;
 
-  submitUsername(){
+  submitUsername() {
     final form = _formKey.currentState;
-    if(form.validate())
-    {
+    if (form.validate()) {
       form.save();
-
-      SnackBar snackBar = SnackBar(content: Text("Welcome " +username));
-      _scaffoldKey.currentState.showSnackBar(snackBar);
-      Timer(Duration(seconds: 2), (){
+      username = tempUsername;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Welcome ' + username),
+        ),
+      );
+      // SnackBar snackBar = SnackBar(content: Text("Welcome " +username));
+      // _scaffoldKey.currentState.showSnackBar(snackBar);
+      Timer(Duration(seconds: 2), () {
         Navigator.pop(context, username);
       });
     }
   }
 
-
   @override
   Widget build(BuildContext parentContext) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: header(context, titleText: "Settings", disappearedBackButton: true),
+      appBar:
+          header(context, titleText: "Settings", disappearedBackButton: true),
       body: ListView(
         children: <Widget>[
           Container(
@@ -40,7 +47,10 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 Padding(
                   padding: EdgeInsets.only(top: 26.0),
                   child: Center(
-                    child: Text("Set up a username", style: TextStyle(fontSize: 26.0),),
+                    child: Text(
+                      "Set up a username",
+                      style: TextStyle(fontSize: 26.0),
+                    ),
                   ),
                 ),
                 Padding(
@@ -50,15 +60,16 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       key: _formKey,
                       autovalidateMode: AutovalidateMode.always,
                       child: TextFormField(
-                        style: TextStyle(color: Colors.white),
-                        validator: (val){
-                          if(val.trim().length<5 || val.isEmpty){
+                        onChanged: (value) {
+                          tempUsername = value;
+                        },
+                        // style: TextStyle(color: Colors.white),
+                        validator: (val) {
+                          if (val.trim().length < 5 || val.isEmpty) {
                             return "Username is very short";
-                          }
-                          else if(val.trim().length>15){
+                          } else if (val.trim().length > 15) {
                             return "Username is very long";
-                          }
-                          else{
+                          } else {
                             return null;
                           }
                         },

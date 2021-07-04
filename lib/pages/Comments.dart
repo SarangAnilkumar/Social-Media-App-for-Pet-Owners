@@ -20,10 +20,10 @@ class Comments extends StatefulWidget {
 
   @override
   CommentsState createState() => CommentsState(
-    postId: this.postId,
-    postOwnerId: this.postOwnerId,
-    postMediaUrl: this.postMediaUrl,
-  );
+        postId: this.postId,
+        postOwnerId: this.postOwnerId,
+        postMediaUrl: this.postMediaUrl,
+      );
 }
 
 class CommentsState extends State<Comments> {
@@ -38,65 +38,75 @@ class CommentsState extends State<Comments> {
     this.postMediaUrl,
   });
 
-  buildComments(){
+  buildComments() {
     return StreamBuilder(
-      stream: commentsReference.doc(postId).collection('comments').orderBy("timestamp", descending: true).snapshots(),
-      builder: (context, snapshot){
-        if(!snapshot.hasData){
-           return circularProgress();
-        }
-        List<Comment> comments = [];
-        snapshot.data.docs.forEach((doc) {
-          comments.add(Comment.fromDocument(doc));
+        stream: commentsReference
+            .doc(postId)
+            .collection('comments')
+            .orderBy("timestamp", descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return circularProgress();
+          }
+          List<Comment> comments = [];
+          snapshot.data.docs.forEach((doc) {
+            comments.add(Comment.fromDocument(doc));
+          });
+          return ListView(
+            children: comments,
+          );
         });
-        return ListView(children: comments,);
-      });
   }
 
-  addComment(){
-    if(commentController.text != "")
-    {
-    commentsReference.doc(postId).collection("comments").add({
-      "username": currentUser.username,
-      "comment": commentController.text,
-      "timestamp": timestamp,
-      "avatarUrl": currentUser.url,
-      "userId": currentUser.id,
-    });
-    bool isNotPostOwner = postOwnerId != currentUser.id;
-    if(isNotPostOwner){
-      activityFeedReference.doc(postOwnerId).collection('feedItems').add({
-        "type": "comment",
-        "commentData" : commentController.text,
-        "username" : currentUser.username,
-        "userId" : currentUser.id,
-        "userProfileImg" : currentUser.url,
-        "postId" : postId,
-        "mediaUrl" : postMediaUrl,
-        "timestamp" : timestamp,
+  addComment() {
+    if (commentController.text != "") {
+      commentsReference.doc(postId).collection("comments").add({
+        "username": currentUser.username,
+        "comment": commentController.text,
+        "timestamp": timestamp,
+        "avatarUrl": currentUser.url,
+        "userId": currentUser.id,
       });
-    }
-    commentController.clear();
+      bool isNotPostOwner = postOwnerId != currentUser.id;
+      if (isNotPostOwner) {
+        activityFeedReference.doc(postOwnerId).collection('feedItems').add({
+          "type": "comment",
+          "commentData": commentController.text,
+          "username": currentUser.username,
+          "userId": currentUser.id,
+          "userProfileImg": currentUser.url,
+          "postId": postId,
+          "mediaUrl": postMediaUrl,
+          "timestamp": timestamp,
+        });
+      }
+      commentController.clear();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: header(context, titleText: "Comments",disappearedBackButton: true),
+      appBar:
+          header(context, titleText: "Comments", disappearedBackButton: true),
       body: Column(
         children: <Widget>[
-            Expanded(child: buildComments()),
+          Expanded(child: buildComments()),
           Divider(),
           ListTile(
             title: TextFormField(
               controller: commentController,
               decoration: InputDecoration(
-                labelText: "Write a comment...",),
+                labelText: "Write a comment...",
+              ),
             ),
             trailing: OutlinedButton(
               onPressed: addComment,
-              child: Text("Post", style: TextStyle(color: Colors.pink),),
+              child: Text(
+                "Post",
+                style: TextStyle(color: Colors.pink),
+              ),
             ),
           )
         ],

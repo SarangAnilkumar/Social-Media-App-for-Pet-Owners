@@ -39,7 +39,7 @@ class _ActivityFeedState extends State<ActivityFeed> {
         child: FutureBuilder(
           future: getActivityFeed(),
           builder: (context, snapshot) {
-            if(!snapshot.hasData) {
+            if (!snapshot.hasData) {
               return circularProgress();
             }
             return ListView(children: snapshot.data);
@@ -76,18 +76,18 @@ class ActivityFeedItem extends StatelessWidget {
 
   factory ActivityFeedItem.fromDoc(DocumentSnapshot doc) {
     return ActivityFeedItem(
-      username : doc['username'],
-      userId : doc['userId'],
-      type : doc['type'],
-      postId : doc['postId'],
-      userProfileImg : doc['userProfileImg'],
-      commentData : doc['commentData'],
-      timestamp : doc['timestamp'],
+      username: doc['username'],
+      userId: doc['userId'],
+      type: doc['type'],
+      postId: doc['postId'],
+      userProfileImg: doc['userProfileImg'],
+      commentData: doc['commentData'],
+      timestamp: doc['timestamp'],
       mediaUrl: doc['mediaUrl'],
     );
   }
 
-  showPost(context){
+  showPost(context) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -99,22 +99,21 @@ class ActivityFeedItem extends StatelessWidget {
     );
   }
 
-  configureMediaPreview(context){
-    if(type == "like" || type == "comment"){
+  configureMediaPreview(context) {
+    if (type == "like" || type == "comment") {
       mediaPreview = GestureDetector(
         onTap: () => showPost(context),
         child: Container(
           height: 50.0,
           width: 50.0,
           child: AspectRatio(
-            aspectRatio: 16/9,
+            aspectRatio: 16 / 9,
             child: Container(
               decoration: BoxDecoration(
                   image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(mediaUrl),
-                  )
-              ),
+                fit: BoxFit.cover,
+                image: CachedNetworkImageProvider(mediaUrl),
+              )),
             ),
           ),
         ),
@@ -122,11 +121,11 @@ class ActivityFeedItem extends StatelessWidget {
     } else {
       mediaPreview = Text("");
     }
-    if (type == 'like'){
+    if (type == 'like') {
       activityItemText = "liked your post";
-    } else if (type == 'follow'){
+    } else if (type == 'follow') {
       activityItemText = "is following you";
-    } else if (type == 'comment'){
+    } else if (type == 'comment') {
       activityItemText = "replied: $commentData";
     } else {
       activityItemText = "Error: Unknown type '$type'";
@@ -153,11 +152,8 @@ class ActivityFeedItem extends StatelessWidget {
                 children: [
                   TextSpan(
                       text: username,
-                      style: TextStyle(fontWeight: FontWeight.bold)
-                  ),
-                  TextSpan(
-                      text: ' $activityItemText'
-                  )
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: ' $activityItemText')
                 ],
               ),
             ),
@@ -176,7 +172,11 @@ class ActivityFeedItem extends StatelessWidget {
   }
 }
 
-showProfile(BuildContext context, { String profileId }){
-  Navigator.push(context, MaterialPageRoute(builder: (context) =>
-  ProfilePage(userProfileId : profileId,)));
+showProfile(BuildContext context, {String profileId}) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ProfilePage(
+                userProfileId: profileId,
+              )));
 }

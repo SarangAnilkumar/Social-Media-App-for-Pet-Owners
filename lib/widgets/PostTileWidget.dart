@@ -3,13 +3,12 @@ import 'package:untitled1/pages/PostScreen.dart';
 import 'package:untitled1/widgets/CImageWidget.dart';
 import 'package:untitled1/widgets/PostWidget.dart';
 
-class PostTile extends StatelessWidget
-{
+class PostTile extends StatelessWidget {
   final Post post;
 
   PostTile(this.post);
 
-  showPost(context){
+  showPost(context) {
     Navigator.push(
       context,
       MaterialPageRoute(
