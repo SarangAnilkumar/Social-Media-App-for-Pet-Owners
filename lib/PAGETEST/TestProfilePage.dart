@@ -1,36 +1,35 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:untitled1/PAGETEST/TestHeaderWidget.dart';
+import 'package:untitled1/PAGETEST/TestLogin.dart';
+import 'package:untitled1/PAGETEST/TestPostTileWidget.dart';
+import 'package:untitled1/PAGETEST/TestPostWidget.dart';
+import 'package:untitled1/PAGETEST/TestHome.dart';
 import 'package:untitled1/PetStuff/PetProfile.dart';
 import 'package:untitled1/PetStuff/PetProfile1.dart';
 import 'package:untitled1/PetStuff/PetRegistration.dart';
-import 'package:untitled1/models/pet.dart';
 import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/EditProfilePage.dart';
-import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/widgets/HeaderWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled1/widgets/PostTileWidget.dart';
-import 'package:untitled1/widgets/PostWidget.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
-import 'package:untitled1/pages/Login.dart';
 
-class ProfilePage extends StatefulWidget {
+class TestProfilePage extends StatefulWidget {
   final String userProfileId;
 
-  ProfilePage({this.userProfileId});
+  TestProfilePage({this.userProfileId});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _TestProfilePageState createState() => _TestProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  final String currentOnlineUserId = currentUser.id;
+class _TestProfilePageState extends State<TestProfilePage> {
+  final String currentOnlineUserId = firebaseUser.uid;
   bool isFollowing = false;
   bool loading = false;
   int countPost = 0;
   int followerCount = 0;
   int followingCount = 0;
-  List<Post> postsList = [];
+  List<TestPost> postsList = [];
   String postOrientation = "grid";
 
   void initState() {
@@ -227,11 +226,11 @@ class _ProfilePageState extends State<ProfilePage> {
         .doc(widget.userProfileId)
         .collection('feedItems')
         .doc(currentOnlineUserId)
-          ..get().then((doc) {
-            if (doc.exists) {
-              doc.reference.delete();
-            }
-          });
+      ..get().then((doc) {
+        if (doc.exists) {
+          doc.reference.delete();
+        }
+      });
   }
 
   handleFollowUser() {
@@ -302,7 +301,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:
-          header(context, titleText: "Profile", disappearedBackButton: false),
+      header(context, titleText: "Profile", disappearedBackButton: false),
       body: ListView(
         children: <Widget>[
           createProfileTopView(),
@@ -338,30 +337,30 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Row(
             children: [
               if(ownProfile)
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PetRegistration()));
-                },
-                child: CircleAvatar(
-                  backgroundColor: Colors.grey[600],
-                  child: Icon(Icons.add,size: 30,),
-                  radius: 35,
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => PetRegistration()));
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey[600],
+                    child: Icon(Icons.add,size: 30,),
+                    radius: 35,
+                  ),
                 ),
-              ),
               TextButton(
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => PetProfile(
-                                petType: "Siberian Husky",
-                                image: AssetImage("assets/images/Husky.jpg"),
-                                petBio:
-                                    "The Siberian Husky is a medium-sized working sled dog breed. The breed belongs to the Spitz genetic family. It is recognizable by its thickly furred double coat, erect triangular ears, and distinctive markings, and is smaller than the similar-looking Alaskan Malamute.",
-                              )));
+                            petType: "Siberian Husky",
+                            image: AssetImage("assets/images/Husky.jpg"),
+                            petBio:
+                            "The Siberian Husky is a medium-sized working sled dog breed. The breed belongs to the Spitz genetic family. It is recognizable by its thickly furred double coat, erect triangular ears, and distinctive markings, and is smaller than the similar-looking Alaskan Malamute.",
+                          )));
                 },
                 child: CircleAvatar(
                   radius: 35,
@@ -377,17 +376,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => PetProfile1(
-                                petType: "Golden Retriever",
-                                image: AssetImage(
-                                    "assets/images/goldenretriever.jpg"),
-                                petBio:
-                                    "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
-                              )));
+                            petType: "Golden Retriever",
+                            image: AssetImage(
+                                "assets/images/goldenretriever.jpg"),
+                            petBio:
+                            "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
+                          )));
                 },
                 child: CircleAvatar(
                   radius: 35,
                   backgroundImage:
-                      AssetImage("assets/images/goldenretriever.jpg"),
+                  AssetImage("assets/images/goldenretriever.jpg"),
                 ),
               ),
               SizedBox(
@@ -399,12 +398,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => PetProfile(
-                                petType: "Rottweiler",
-                                image:
-                                    AssetImage("assets/images/rottweiler.jpg"),
-                                petBio:
-                                    "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
-                              )));
+                            petType: "Rottweiler",
+                            image:
+                            AssetImage("assets/images/rottweiler.jpg"),
+                            petBio:
+                            "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
+                          )));
                 },
                 child: CircleAvatar(
                   radius: 35,
@@ -420,11 +419,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => PetProfile(
-                                petType: "Samoyed",
-                                image: AssetImage("assets/images/Samoyed.jpg"),
-                                petBio:
-                                    "The Samoyed is a breed of medium-sized herding dogs with thick, white, double-layer coats. They are related to the laika, a spitz-type dog. It takes its name from the Samoyedic peoples of Siberia. These nomadic reindeer herders bred the fluffy white dogs to help with herding.",
-                              )));
+                            petType: "Samoyed",
+                            image: AssetImage("assets/images/Samoyed.jpg"),
+                            petBio:
+                            "The Samoyed is a breed of medium-sized herding dogs with thick, white, double-layer coats. They are related to the laika, a spitz-type dog. It takes its name from the Samoyedic peoples of Siberia. These nomadic reindeer herders bred the fluffy white dogs to help with herding.",
+                          )));
                 },
                 child: CircleAvatar(
                   radius: 35,
@@ -440,12 +439,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => PetProfile(
-                                petType: "Golden Retriever",
-                                image: AssetImage(
-                                    "assets/images/photo-1510771463146-e89e6e86560e.jpg"),
-                                petBio:
-                                    "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
-                              )));
+                            petType: "Golden Retriever",
+                            image: AssetImage(
+                                "assets/images/photo-1510771463146-e89e6e86560e.jpg"),
+                            petBio:
+                            "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
+                          )));
                 },
                 child: CircleAvatar(
                   radius: 35,
@@ -459,12 +458,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => PetProfile1(
-                                petType: "Rottweiler",
-                                image:
-                                    AssetImage("assets/images/rottweiler.jpg"),
-                                petBio:
-                                    "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
-                              )));
+                            petType: "Rottweiler",
+                            image:
+                            AssetImage("assets/images/rottweiler.jpg"),
+                            petBio:
+                            "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
+                          )));
                 },
                 child: CircleAvatar(
                   radius: 35,
@@ -510,7 +509,7 @@ class _ProfilePageState extends State<ProfilePage> {
     } else if (postOrientation == "grid") {
       List<GridTile> gridTiles = [];
       postsList.forEach((eachPost) {
-        gridTiles.add(GridTile(child: PostTile(eachPost)));
+        gridTiles.add(GridTile(child: TestPostTile(eachPost)));
       });
       return GridView.count(
         crossAxisCount: 3,
@@ -542,7 +541,7 @@ class _ProfilePageState extends State<ProfilePage> {
       loading = false;
       countPost = querySnapshot.docs.length;
       postsList = querySnapshot.docs
-          .map((documentSnapshot) => Post.fromDocument(documentSnapshot))
+          .map((documentSnapshot) => TestPost.fromDocument(documentSnapshot))
           .toList();
     });
   }

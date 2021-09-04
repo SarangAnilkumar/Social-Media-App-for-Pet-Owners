@@ -1,5 +1,7 @@
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
+import 'package:image/image.dart' as ImD;
 import 'package:untitled1/models/user.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,24 +9,27 @@ import 'package:path_provider/path_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/pages/ProfilePage.dart';
-import 'package:untitled1/pages/Login.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:untitled1/PAGETEST/TestHome.dart';
+import 'package:untitled1/PAGETEST/TestLogin.dart';
+import 'package:untitled1/PAGETEST/TestProfilePage.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
-import 'package:uuid/uuid.dart';
-import 'package:image/image.dart' as ImD;
 
-class UploadPage extends StatefulWidget {
+
+class TestUploadPage extends StatefulWidget {
   final useri currentUser;
-  UploadPage({this.currentUser});
+  TestUploadPage({this.currentUser});
   @override
-  _UploadPageState createState() => _UploadPageState();
+  _TestUploadPageState createState() => _TestUploadPageState();
 }
 
-class _UploadPageState extends State<UploadPage>
-    with AutomaticKeepAliveClientMixin<UploadPage> {
+class _TestUploadPageState extends State<TestUploadPage>
+    with AutomaticKeepAliveClientMixin<TestUploadPage> {
   File file;
   bool uploading = false;
+  useri user;
+  String username;
+  bool loading = false;
   String postId = Uuid().v4();
   TextEditingController descriptionTextEditingController = TextEditingController();
   TextEditingController locationTextEditingController = TextEditingController();
@@ -110,19 +115,19 @@ class _UploadPageState extends State<UploadPage>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(height: 50),
-               Row(
-                 children: [
-                   TextButton.icon(
-                       onPressed: () {
-                         Navigator.push(context,
-                             MaterialPageRoute(builder: (context) => Home()));
-                       },
-                       icon: Icon(
-                         Icons.arrow_back,
-                         color: Colors.grey,
-                       ),
-                       label: Text(""))
-                 ],
+              Row(
+                children: [
+                  TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => TestHome()));
+                      },
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Colors.grey,
+                      ),
+                      label: Text(""))
+                ],
               ),
               SizedBox(height: 120),
               Icon(
@@ -212,32 +217,48 @@ class _UploadPageState extends State<UploadPage>
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ProfilePage(
-              userProfileId: currentUser?.id,
+            builder: (context) => TestProfilePage(
+              userProfileId: firebaseUser.uid,
             )));
+  }
+
+  getAndDisplayUserInfo() async {
+    setState(() {
+      loading = true;
+    });
+
+    DocumentSnapshot documentSnapshot =
+    await usersReference.doc(firebaseUser.uid).get();
+    user = useri.fromDocument(documentSnapshot);
+
+    username = user.username;
+
+    setState(() {
+      loading = false;
+    });
   }
 
   savePostInfoToFireStore({String url, String location, String description}) {
     postsReference
-        .doc(widget.currentUser.id)
+        .doc(firebaseUser.uid)
         .collection("usersPosts")
         .doc(postId)
         .set({
       "postId": postId,
-      "ownerId": widget.currentUser.id,
+      "ownerId": firebaseUser.uid,
       "timestamp": timestamp,
       "likes": {},
-      "username": widget.currentUser.username,
+      "username": username,
       "description": description,
       "location": location,
       "url": url,
     });
     timelineReference.doc('timeline').collection('timeline').doc(postId).set({
       "postId": postId,
-      "ownerId": widget.currentUser.id,
+      "ownerId": firebaseUser.uid,
       "timestamp": timestamp,
       "likes": {},
-      "username": widget.currentUser.username,
+      "username": username,
       "description": description,
       "location": location,
       "url": url,
@@ -296,9 +317,9 @@ class _UploadPageState extends State<UploadPage>
                 child: Container(
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                    image: FileImage(file),
-                    fit: BoxFit.cover,
-                  )),
+                        image: FileImage(file),
+                        fit: BoxFit.cover,
+                      )),
                 ),
               ),
             ),
@@ -309,20 +330,20 @@ class _UploadPageState extends State<UploadPage>
           ListTile(
             leading: CircleAvatar(
               backgroundImage:
-                  CachedNetworkImageProvider(widget.currentUser.url),
+              CachedNetworkImageProvider(firebaseUser.photoURL),
             ),
             title: Container(
               width: 250.0,
               child: TextField(
                 style: Theme.of(context).textTheme.bodyText1.copyWith(
-                      fontSize: 15,
-                    ),
+                  fontSize: 15,
+                ),
                 controller: descriptionTextEditingController,
                 decoration: InputDecoration(
                   hintText: "Write a caption..",
                   hintStyle: Theme.of(context).textTheme.bodyText1.copyWith(
-                        fontSize: 16,
-                      ),
+                    fontSize: 16,
+                  ),
                   border: InputBorder.none,
                 ),
               ),
@@ -341,14 +362,14 @@ class _UploadPageState extends State<UploadPage>
               width: 250.0,
               child: TextField(
                 style: Theme.of(context).textTheme.bodyText1.copyWith(
-                      fontSize: 15,
-                    ),
+                  fontSize: 15,
+                ),
                 controller: locationTextEditingController,
                 decoration: InputDecoration(
                   hintText: "Write the location here....",
                   hintStyle: Theme.of(context).textTheme.bodyText1.copyWith(
-                        fontSize: 16,
-                      ),
+                    fontSize: 16,
+                  ),
                   border: InputBorder.none,
                 ),
               ),

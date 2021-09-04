@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tindercard/flutter_tindercard.dart';
 
@@ -6,8 +7,7 @@ class PetTinder extends StatefulWidget {
   _PetTinderState createState() => _PetTinderState();
 }
 
-class _PetTinderState extends State<PetTinder>
-    with TickerProviderStateMixin {
+class _PetTinderState extends State<PetTinder> with TickerProviderStateMixin {
   CardController controller;
 
   List itemsTemp = [];
@@ -72,93 +72,99 @@ class _PetTinderState extends State<PetTinder>
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(15),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: size.width * 0.72,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      itemsTemp[index]['name'],
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Text(
-                                      itemsTemp[index]['age'],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 22,
+                          child: ClipRect(
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: size.width * 0.67,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        itemsTemp[index]['name'],
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: List.generate(
-                                            itemsTemp[index]['likes'].length,
-                                            (indexLikes) {
-                                              return Padding(
-                                                padding:
-                                                const EdgeInsets.only(right: 8),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                      BorderRadius.circular(30),
-                                                      color: Colors.white.withOpacity(0.2)),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(
-                                                        top: 3,
-                                                        bottom: 3,
-                                                        left: 10,
-                                                        right: 10),
-                                                    child: Text(
-                                                      itemsTemp[index]['likes']
-                                                      [indexLikes],
-                                                      style: TextStyle(color: Colors.white),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        itemsTemp[index]['age'],
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: List.generate(
+                                              itemsTemp[index]['likes'].length,
+                                              (indexLikes) {
+                                                return Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(right: 8),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.circular(30),
+                                                        color: Colors.white.withOpacity(0.2)),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(
+                                                          top: 3,
+                                                          bottom: 3,
+                                                          left: 10,
+                                                          right: 10),
+                                                      child: Text(
+                                                        itemsTemp[index]['likes']
+                                                        [indexLikes],
+                                                        style: TextStyle(color: Colors.white),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              );
-                                            }),
+                                                );
+                                              }),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 16,
-                                    ),
-                                    Text(
-                                      "Bio:",
-                                      style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 17,),),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      itemsTemp[index]['Bio'],
-                                      style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 14,),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  width: size.width * 0.2,
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.info,
-                                      color: Colors.white,
-                                      size: 28,
-                                    ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      Text(
+                                        "Bio:",
+                                        style: TextStyle(fontSize: 17,color: Colors.white,fontWeight: FontWeight.w700),),
+                                      SizedBox(
+                                        height: 2,
+                                      ),
+                                      Text(
+                                        itemsTemp[index]['Bio'],
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                            fontWeight: FontWeight.w500
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              )
-                            ],
+                                Expanded(
+                                  child: Container(
+                                    width: size.width * 0.2,
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.info,
+                                        color: Colors.white,
+                                        size: 28,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         )
                       ],
@@ -171,9 +177,11 @@ class _PetTinderState extends State<PetTinder>
           cardController: controller = CardController(),
           swipeUpdateCallback: (DragUpdateDetails details, Alignment align) {
             /// Get swiping card's alignment
-            if (align.x < 0) {
+            if (align.x < -8) {
+              print("Swiped Left");
               //Card is LEFT swiping
-            } else if (align.x > 0) {
+            } else if (align.x > 10) {
+              print("Swiped Right");
               //Card is RIGHT swiping
             }
             // print(itemsTemp.length);
@@ -190,11 +198,9 @@ class _PetTinderState extends State<PetTinder>
       ),
     );
   }
-
-
 }
-const List explore_json = [
 
+const List explore_json = [
   {
     "img": "assets/images/photo-1510771463146-e89e6e86560e.jpg",
     "name": "Al-Qaeda",

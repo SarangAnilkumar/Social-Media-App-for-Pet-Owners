@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:untitled1/pages/PostScreen.dart';
 import 'package:untitled1/pages/ProfilePage.dart';
 import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/pages/TestLogin.dart';
+import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/widgets/HeaderWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
@@ -14,7 +14,10 @@ class ActivityFeed extends StatefulWidget {
   _ActivityFeedState createState() => _ActivityFeedState();
 }
 
-class _ActivityFeedState extends State<ActivityFeed> {
+class _ActivityFeedState extends State<ActivityFeed> with AutomaticKeepAliveClientMixin<ActivityFeed>{
+
+  bool get wantKeepAlive => true;
+
   getActivityFeed() async {
     QuerySnapshot snapshot = await activityFeedReference
         .doc(currentUser.id)

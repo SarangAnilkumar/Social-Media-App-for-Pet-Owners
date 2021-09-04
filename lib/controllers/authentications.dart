@@ -17,7 +17,7 @@ showErrDialog(BuildContext context, String err) {
         title: Text("Error"),
         content: Text(err),
         actions: <Widget>[
-          OutlineButton(
+          OutlinedButton(
             onPressed: () {
               Navigator.pop(context);
             },
@@ -53,13 +53,13 @@ Future<bool> googleSignIn() async {
 
 // instead of returning true or false
 // returning user to directly access tasksD
-Future<User> signin(String email, String password, BuildContext context) async {
+Future<bool> signin(String email, String password, BuildContext context) async {
   try {
     UserCredential result =
         await auth.signInWithEmailAndPassword(email: email, password: email);
     User user = result.user;
     // return Future.value(true);
-    return Future.value(user);
+    return Future.value(true);
   } catch (e) {
     // simply passing error code as a message
     print(e.code);
@@ -92,7 +92,8 @@ Future<User> signin(String email, String password, BuildContext context) async {
 }
 
 // change to Future<User> for returning a user
-Future<User> signUp(String email, String password, BuildContext context) async {
+Future<User> signUp(
+    String email, String password, BuildContext context) async {
   try {
     UserCredential result = await auth.createUserWithEmailAndPassword(
         email: email, password: email);

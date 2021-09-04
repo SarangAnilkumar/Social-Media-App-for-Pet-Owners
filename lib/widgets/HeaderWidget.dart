@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled1/pages/TestLogin.dart';
+import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/pages/UploadPage.dart';
 
 AppBar header(context,
@@ -25,7 +25,7 @@ AppBar header(context,
     ),
     automaticallyImplyLeading: disappearedBackButton ? true : false,
     title: Text(
-      isAppTitle ? "untitled1" : titleText,
+      isAppTitle ? "PetApp" : titleText,
       style: Theme.of(context).textTheme.bodyText1.copyWith(
             fontSize: isAppTitle ? 45.0 : 22.0,
             fontFamily: isAppTitle ? "Signatra" : "",

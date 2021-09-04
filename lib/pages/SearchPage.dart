@@ -131,7 +131,6 @@ class _SearchPageState extends State<SearchPage> {
         if (!dataSnapshot.hasData) {
           return circularProgress();
         }
-
         List<UserResult> searchUserResult = [];
         dataSnapshot.data.docs.forEach((document) {
           useri user = useri.fromDocument(document);

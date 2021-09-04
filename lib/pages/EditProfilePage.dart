@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/pages/TestLogin.dart';
+import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 
@@ -17,14 +17,15 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  TextEditingController profileNameTextEditingController =
-      TextEditingController();
+  TextEditingController profileNameTextEditingController = TextEditingController();
   TextEditingController bioTextEditingController = TextEditingController();
+  TextEditingController usernameTextEditingController = TextEditingController();
   final _scaffoldGlobalKey = GlobalKey<ScaffoldState>();
   bool loading = false;
   useri user;
   bool _bioValid = true;
   bool _profileNameValid = true;
+  bool _usernameValid = true;
 
   void initState() {
     super.initState();
@@ -42,6 +43,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     profileNameTextEditingController.text = user.profileName;
     bioTextEditingController.text = user.bio;
+    usernameTextEditingController.text = user.username;
 
     setState(() {
       loading = false;
@@ -50,19 +52,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   updateUserData() {
     setState(() {
-      profileNameTextEditingController.text.trim().length < 3 ||
-              profileNameTextEditingController.text.isEmpty
+      profileNameTextEditingController.text.trim().length < 3 || profileNameTextEditingController.text.isEmpty
           ? _profileNameValid = false
           : _profileNameValid = true;
       bioTextEditingController.text.trim().length > 100
           ? _bioValid = false
           : _bioValid = true;
+      usernameTextEditingController.text.trim().length < 3 || usernameTextEditingController.text.isEmpty
+          ? _usernameValid = false
+          : _usernameValid = true;
     });
 
-    if (_bioValid && _profileNameValid) {
+    if (_bioValid && _profileNameValid && _usernameValid) {
       usersReference.doc(widget.currentOnlineUserId).update({
         "profileName": profileNameTextEditingController.text,
         "bio": bioTextEditingController.text,
+        "username" : usernameTextEditingController.text
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -116,7 +121,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         child: Column(
                           children: <Widget>[
                             createProfileNameTextFormField(),
-                            createBioTextFormField()
+                            createBioTextFormField(),
+                            createusernameTextFormField(),
                           ],
                         ),
                       ),
@@ -186,6 +192,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             hintStyle: TextStyle(color: Colors.grey),
             errorText: _profileNameValid ? null : "Profile name is very short",
+          ),
+        )
+      ],
+    );
+  }
+
+  Column createusernameTextFormField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 13.0),
+          child: Text(
+            "User Name",
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+        TextField(
+          style: TextStyle(color: Colors.white),
+          controller: usernameTextEditingController,
+          decoration: InputDecoration(
+            hintText: "Write Username here..",
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            hintStyle: TextStyle(color: Colors.grey),
+            errorText: _usernameValid ? null : "Username is very short",
           ),
         )
       ],

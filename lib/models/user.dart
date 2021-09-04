@@ -19,7 +19,7 @@ class useri {
 
   factory useri.fromDocument(DocumentSnapshot doc) {
     return useri(
-      id: doc['id'],
+      id: doc.id,
       email: doc['email'],
       username: doc['username'],
       url: doc['url'],

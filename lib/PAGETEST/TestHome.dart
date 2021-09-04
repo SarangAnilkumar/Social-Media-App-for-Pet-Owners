@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:untitled1/PetStuff/PetTinder.dart';
 import 'package:untitled1/pages/ActivityFeed.dart';
 import 'package:untitled1/pages/Pet.dart';
-import 'package:untitled1/pages/ProfilePage.dart';
 import 'package:untitled1/pages/SearchPage.dart';
-import 'package:untitled1/pages/Login.dart';
-import 'package:untitled1/pages/TimeLine.dart';
+import 'package:untitled1/PAGETEST/TestLogin.dart';
+import 'package:untitled1/PAGETEST/TestProfilePage.dart';
+import 'package:untitled1/PAGETEST/TestTimeline.dart';
 
 final usersReference = FirebaseFirestore.instance.collection('users');
 final storageReference = FirebaseStorage.instance.ref().child('Post Pictures');
@@ -23,12 +23,12 @@ final timelineReference = FirebaseFirestore.instance.collection('timeline');
 final petReference = FirebaseFirestore.instance.collection('Pets');
 final DateTime timestamp = DateTime.now();
 
-class Home extends StatefulWidget {
+class TestHome extends StatefulWidget {
   @override
-  _Home createState() => _Home();
+  _TestHome createState() => _TestHome();
 }
 
-class _Home extends State<Home> {
+class _TestHome extends State<TestHome> {
   bool isSignedIn = false;
   PageController pageController;
   int getPageIndex = 0;
@@ -55,13 +55,13 @@ class _Home extends State<Home> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          TimeLine(currentUser: currentUser),
+          TestTimeLine(),
           SearchPage(),
           Pet(),
           PetTinder(),
           ActivityFeed(),
-          ProfilePage(
-            userProfileId: currentUser.id,
+          TestProfilePage(
+            userProfileId: firebaseUser.uid,
           ),
         ],
         controller: pageController,

@@ -2,15 +2,15 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled1/PAGETEST/TestComments.dart';
+import 'package:untitled1/PAGETEST/TestHome.dart';
+import 'package:untitled1/PAGETEST/TestLogin.dart';
 import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/ActivityFeed.dart';
-import 'package:untitled1/pages/Comments.dart';
-import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/widgets/CImageWidget.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
 
-class Post extends StatefulWidget {
+class TestPost extends StatefulWidget {
   final String postId;
   final String ownerId;
   final dynamic likes;
@@ -19,7 +19,7 @@ class Post extends StatefulWidget {
   final String location;
   final String url;
 
-  Post({
+  TestPost({
     this.postId,
     this.ownerId,
     this.likes,
@@ -29,8 +29,8 @@ class Post extends StatefulWidget {
     this.url,
   });
 
-  factory Post.fromDocument(DocumentSnapshot documentSnapshot) {
-    return Post(
+  factory TestPost.fromDocument(DocumentSnapshot documentSnapshot) {
+    return TestPost(
       postId: documentSnapshot["postId"],
       ownerId: documentSnapshot["ownerId"],
       likes: documentSnapshot["likes"],
@@ -56,20 +56,20 @@ class Post extends StatefulWidget {
   }
 
   @override
-  _PostState createState() => _PostState(
-        postId: this.postId,
-        ownerId: this.ownerId,
-        likes: this.likes,
-        username: this.username,
-        description: this.description,
-        location: this.location,
-        url: this.url,
-        likeCount: getTotalNumberOfLikes(this.likes),
-      );
+  _TestPostState createState() => _TestPostState(
+    postId: this.postId,
+    ownerId: this.ownerId,
+    likes: this.likes,
+    username: this.username,
+    description: this.description,
+    location: this.location,
+    url: this.url,
+    likeCount: getTotalNumberOfLikes(this.likes),
+  );
 }
 
-class _PostState extends State<Post> {
-  final String currentUserId = currentUser?.id;
+class _TestPostState extends State<TestPost> {
+  final String currentUserId = firebaseUser.uid;
   final String postId;
   final String ownerId;
   Map likes;
@@ -80,8 +80,10 @@ class _PostState extends State<Post> {
   int likeCount;
   bool _isLiked;
   bool showHeart = false;
+  bool loading = false;
+  useri user;
 
-  _PostState({
+  _TestPostState({
     this.postId,
     this.ownerId,
     this.likes,
@@ -134,15 +136,15 @@ class _PostState extends State<Post> {
             ),
           ),
           subtitle:
-              Text(location, style: Theme.of(context).textTheme.bodyText1),
+          Text(location, style: Theme.of(context).textTheme.bodyText1),
           trailing: isPostOwner
               ? IconButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () => handleDeletePost(context),
-                )
+            icon: Icon(
+              Icons.more_vert,
+              color: Colors.grey,
+            ),
+            onPressed: () => handleDeletePost(context),
+          )
               : Text(""),
         );
       },
@@ -260,6 +262,29 @@ class _PostState extends State<Post> {
     }
   }
 
+  String username1;
+  String url1;
+  String id1;
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
+  getUserInfo() async {
+    setState(() {
+      loading = true;
+    });
+    DocumentSnapshot documentSnapshot =
+    await usersReference.doc(firebaseUser.uid).get();
+    user = useri.fromDocument(documentSnapshot);
+    username1 = user.username;
+    url1 = user.url;
+    id1 = user.id;
+    setState(() {
+      loading = false;
+    });
+  }
+
   addLikeToActivityFeed() {
     bool isNotPostOwner = currentUserId != ownerId;
     if (isNotPostOwner) {
@@ -269,9 +294,9 @@ class _PostState extends State<Post> {
           .doc(postId)
           .set({
         "type": "like",
-        "username": currentUser.username,
-        "userId": currentUser.id,
-        "userProfileImg": currentUser.url,
+        "username": username1,
+        "userId": id1,
+        "userProfileImg": url1,
         "postId": postId,
         "mediaUrl": url,
         "timestamp": timestamp,
@@ -304,10 +329,10 @@ class _PostState extends State<Post> {
           cachedNetworkImage(url),
           showHeart
               ? Icon(
-                  Icons.favorite,
-                  size: 100.0,
-                  color: Colors.red,
-                )
+            Icons.favorite,
+            size: 100.0,
+            color: Colors.red,
+          )
               : Text(""),
         ],
       ),
@@ -389,7 +414,7 @@ class _PostState extends State<Post> {
 showComments(BuildContext context,
     {String postId, String ownerId, String mediaUrl}) {
   Navigator.push(context, MaterialPageRoute(builder: (context) {
-    return Comments(
+    return TestComments(
       postId: postId,
       postOwnerId: ownerId,
       postMediaUrl: mediaUrl,

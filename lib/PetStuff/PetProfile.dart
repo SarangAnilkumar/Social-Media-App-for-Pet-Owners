@@ -50,7 +50,6 @@ class _PetProfileState extends State<PetProfile> {
           Expanded(
             child: Stack(
               children: [
-
                 Hero(
                   tag: "assets/images/Husky.jpg",
                   child: Container(

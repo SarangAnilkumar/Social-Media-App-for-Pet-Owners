@@ -1,21 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:untitled1/models/user.dart';
-import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/pages/Login.dart';
-import 'package:untitled1/widgets/HeaderWidget.dart';
-import 'package:untitled1/widgets/PostWidget.dart';
+import 'package:untitled1/PAGETEST/TestHeaderWidget.dart';
+import 'package:untitled1/PAGETEST/TestHome.dart';
+import 'package:untitled1/PAGETEST/TestLogin.dart';
+import 'package:untitled1/PAGETEST/TestPostWidget.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
 import 'package:flutter/material.dart';
 
-class TimeLine extends StatefulWidget {
-  final useri currentUser;
-  TimeLine({this.currentUser});
+class TestTimeLine extends StatefulWidget {
+
   @override
-  _TimeLineState createState() => _TimeLineState();
+  _TestTimeLineState createState() => _TestTimeLineState();
 }
 
-class _TimeLineState extends State<TimeLine> {
-  List<Post> posts;
+class _TestTimeLineState extends State<TestTimeLine> {
+  List<TestPost> posts;
   List<String> followingList = [];
   @override
   void initState() {
@@ -31,8 +29,8 @@ class _TimeLineState extends State<TimeLine> {
         .collection('timeline')
         .orderBy("timestamp", descending: true)
         .get();
-    List<Post> posts =
-        snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
+    List<TestPost> posts =
+    snapshot.docs.map((doc) => TestPost.fromDocument(doc)).toList();
     setState(() {
       this.posts = posts;
     });
@@ -40,7 +38,7 @@ class _TimeLineState extends State<TimeLine> {
 
   getFollowing() async {
     QuerySnapshot snapshot = await followingReference
-        .doc(currentUser.id)
+        .doc(firebaseUser.uid)
         .collection('userFollowing')
         .get();
     setState(() {
@@ -58,7 +56,7 @@ class _TimeLineState extends State<TimeLine> {
   logoutUser() async {
     await gSignIn.signOut();
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Login()));
+        context, MaterialPageRoute(builder: (context) => TestLogin()));
   }
 
   @override

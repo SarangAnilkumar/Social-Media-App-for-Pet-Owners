@@ -2,45 +2,78 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled1/PAGETEST/TestHome.dart';
+import 'package:untitled1/PAGETEST/TestLogin.dart';
+import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/ActivityFeed.dart';
-import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/widgets/HeaderWidget.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class Comments extends StatefulWidget {
+class TestComments extends StatefulWidget {
   final String postId;
   final String postOwnerId;
   final String postMediaUrl;
 
-  Comments({
+  TestComments({
     this.postId,
     this.postOwnerId,
     this.postMediaUrl,
   });
 
   @override
-  CommentsState createState() => CommentsState(
-        postId: this.postId,
-        postOwnerId: this.postOwnerId,
-        postMediaUrl: this.postMediaUrl,
-      );
+  TestCommentsState createState() => TestCommentsState(
+      postId: this.postId,
+      postOwnerId: this.postOwnerId,
+      postMediaUrl: this.postMediaUrl,
+  );
 }
 
-class CommentsState extends State<Comments> {
+class TestCommentsState extends State<TestComments> {
+
   TextEditingController commentController = TextEditingController();
   final String postId;
   final String postOwnerId;
   final String postMediaUrl;
+  bool loading = false;
+  useri user;
+  String username;
+  String url;
+  String id;
 
-  CommentsState({
+  TestCommentsState({
     this.postId,
     this.postOwnerId,
     this.postMediaUrl,
   });
 
-  buildComments() {
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
+  getUserInfo() async {
+    setState(() {
+      loading = true;
+    });
+
+    DocumentSnapshot documentSnapshot =
+    await usersReference.doc(firebaseUser.uid).get();
+    user = useri.fromDocument(documentSnapshot);
+
+    username = user.username;
+    url = user.url;
+    id = user.id;
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+
+
+
+  buildTestComments() {
     return StreamBuilder(
         stream: commentsReference
             .doc(postId)
@@ -64,20 +97,20 @@ class CommentsState extends State<Comments> {
   addComment() {
     if (commentController.text != "") {
       commentsReference.doc(postId).collection("comments").add({
-        "username": currentUser.username,
+        "username": username,
         "comment": commentController.text,
         "timestamp": timestamp,
-        "avatarUrl": currentUser.url,
-        "userId": currentUser.id,
+        "avatarUrl": url,
+        "userId": id,
       });
       bool isNotPostOwner = postOwnerId != currentUser.id;
       if (isNotPostOwner) {
         activityFeedReference.doc(postOwnerId).collection('feedItems').add({
           "type": "comment",
           "commentData": commentController.text,
-          "username": currentUser.username,
-          "userId": currentUser.id,
-          "userProfileImg": currentUser.url,
+          "username": username,
+          "userId": id,
+          "userProfileImg": url,
           "postId": postId,
           "mediaUrl": postMediaUrl,
           "timestamp": timestamp,
@@ -91,10 +124,10 @@ class CommentsState extends State<Comments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:
-          header(context, titleText: "Comments", disappearedBackButton: true),
+      header(context, titleText: "Comments", disappearedBackButton: true),
       body: Column(
         children: <Widget>[
-          Expanded(child: buildComments()),
+          Expanded(child: buildTestComments()),
           Divider(),
           ListTile(
             title: TextFormField(
@@ -116,6 +149,13 @@ class CommentsState extends State<Comments> {
     );
   }
 }
+
+
+
+
+
+
+
 
 class Comment extends StatelessWidget {
   final String username;
@@ -155,7 +195,7 @@ class Comment extends StatelessWidget {
             ],
           ),
           leading: TextButton(
-            onPressed: () => showProfile(context, profileId: userId),
+            onPressed: () => showProfile(context, profileId: firebaseUser.uid),
             child: CircleAvatar(
               backgroundImage: CachedNetworkImageProvider(avatarUrl),
             ),
