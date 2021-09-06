@@ -96,7 +96,7 @@ Future<User> signUp(
     String email, String password, BuildContext context) async {
   try {
     UserCredential result = await auth.createUserWithEmailAndPassword(
-        email: email, password: email);
+        email: email, password: password);
     User user = result.user;
     return Future.value(user);
     // return Future.value(true);

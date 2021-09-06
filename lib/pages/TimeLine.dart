@@ -1,50 +1,31 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/widgets/HeaderWidget.dart';
 import 'package:untitled1/widgets/PostWidget.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
 import 'package:flutter/material.dart';
 
 class TimeLine extends StatefulWidget {
-  final useri currentUser;
-  TimeLine({this.currentUser});
   @override
   _TimeLineState createState() => _TimeLineState();
 }
 
 class _TimeLineState extends State<TimeLine> {
+
   List<Post> posts;
-  List<String> followingList = [];
   @override
   void initState() {
     super.initState();
     getTimeline();
-    getFollowing();
   }
 
   getTimeline() async {
-    //NEED TO CHANGE
-    QuerySnapshot snapshot = await timelineReference
-        .doc('timeline')
-        .collection('timeline')
-        .orderBy("timestamp", descending: true)
-        .get();
+    QuerySnapshot snapshot =
+    await timelineReference.orderBy("timestamp", descending: true).get();
     List<Post> posts =
-        snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
+    snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
     setState(() {
       this.posts = posts;
-    });
-  }
-
-  getFollowing() async {
-    QuerySnapshot snapshot = await followingReference
-        .doc(currentUser.id)
-        .collection('userFollowing')
-        .get();
-    setState(() {
-      followingList = snapshot.docs.map((doc) => doc.id).toList();
     });
   }
 
@@ -55,12 +36,6 @@ class _TimeLineState extends State<TimeLine> {
     return ListView(children: posts);
   }
 
-  logoutUser() async {
-    await gSignIn.signOut();
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Login()));
-  }
-
   @override
   Widget build(context) {
     return Scaffold(
@@ -69,6 +44,7 @@ class _TimeLineState extends State<TimeLine> {
           isAppTitle: true,
         ),
         body: RefreshIndicator(
+          color: Colors.pink,
           onRefresh: () => getTimeline(),
           child: buildTimeline(),
         ));

@@ -4,7 +4,7 @@ class PetProfile extends StatefulWidget {
 
   String petType;
   String petBio;
-  AssetImage image;
+  NetworkImage image;
 
   PetProfile({@required this.petType, this.image, this.petBio});
 
@@ -13,6 +13,7 @@ class PetProfile extends StatefulWidget {
 }
 
 class _PetProfileState extends State<PetProfile> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +47,6 @@ class _PetProfileState extends State<PetProfile> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-
           Expanded(
             child: Stack(
               children: [

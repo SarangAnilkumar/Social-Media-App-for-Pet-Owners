@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled1/PetStuff/SearchPageDogCard.dart';
+import 'package:untitled1/PetStuff/PetEventCard.dart';
 import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/ActivityFeed.dart';
 import 'package:untitled1/pages/Home.dart';
@@ -16,14 +16,10 @@ class _SearchPageState extends State<SearchPage> {
   TextEditingController searchTextEditingController = TextEditingController();
   Future<QuerySnapshot> futureSearchResults;
 
-  emptyTheTextFormField() {
-    searchTextEditingController.clear();
-    displayNoSearchResultsScreen();
-  }
 
   controlSearching(String str) {
     Future<QuerySnapshot> allUsers =
-        usersReference.where("profileName", isGreaterThanOrEqualTo: str).get();
+        usersReference.where("profileName", isGreaterThanOrEqualTo: str,).get();
     setState(() {
       futureSearchResults = allUsers;
     });
@@ -46,22 +42,26 @@ class _SearchPageState extends State<SearchPage> {
               Icons.clear,
               color: Colors.pink,
             ),
-            onPressed: emptyTheTextFormField,
+            onPressed: () {
+              searchTextEditingController.clear();
+              return displayNoSearchResultsScreen();
+            },
           ),
         ),
         onFieldSubmitted: controlSearching,
       ),
+      automaticallyImplyLeading: false,
     );
   }
 
   displayNoSearchResultsScreen() {
-    final Orientation orientation = MediaQuery.of(context).orientation;
+    searchTextEditingController.clear();
     return SingleChildScrollView(
       child: Container(
         child: Column(
           children: [
             SizedBox(
-              height: 30,
+              height: 90,
             ),
             ListView(
               shrinkWrap: true,
@@ -69,7 +69,7 @@ class _SearchPageState extends State<SearchPage> {
                 Icon(
                   Icons.group,
                   color: Colors.grey,
-                  size: 50.0,
+                  size: 60.0,
                 ),
                 Text("Search Users",
                     textAlign: TextAlign.center,
@@ -78,45 +78,6 @@ class _SearchPageState extends State<SearchPage> {
                           fontWeight: FontWeight.w400,
                         )),
               ],
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 20, bottom: 20, left: 10, right: 10),
-                child: Column(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: <Widget>[
-                          SearchPageDogCard(
-                            imgScr: "assets/images/card_dog_1.png",
-                            title: "Golden Retriever Meetup at Cubbon Park",
-                            location: "Cubbon Park, Bangalore",
-                            members: "10 members",
-                            orgBy: "Narendra Modi",
-                            date: "2nd Sept 2021",
-                          ),
-                          SearchPageDogCard(
-                              imgScr: "assets/images/card_dog_1.png",
-                              title: "Meet our lovely dogs walking with us",
-                              location: "ISIS, Pakistan",
-                              members: "8 members",
-                              orgBy: "Shakespeare",
-                              date: "10th Oct 2021"),
-                          SearchPageDogCard(
-                              imgScr: "assets/images/card_dog_1.png",
-                              title: "BLA BLA BLA BLA BLA BLA BLA",
-                              location: "Agra, Delhi",
-                              members: "20 members",
-                              orgBy: "Osama",
-                              date: "15th Dec 2021"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ),
           ],
         ),

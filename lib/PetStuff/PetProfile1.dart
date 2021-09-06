@@ -1,26 +1,73 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:untitled1/pages/Home.dart';
+import 'package:untitled1/pages/Login.dart';
 
 class PetProfile1 extends StatefulWidget {
-  String petType;
-  String petBio;
-  AssetImage image;
+  final String petType;
+  final String petBreed;
+  final String petBio;
+  final String petName;
+  final String petGender;
+  final String petColor;
+  final String petWeight;
+  final String PetId;
+  final String UserId;
+  final String petLocation;
+  final NetworkImage image;
+  final Timestamp petDOB;
+  final bool pedigree;
+  final bool vaccinated;
 
-  PetProfile1({@required this.petType, this.image, this.petBio});
+  PetProfile1({@required this.petType,this.PetId,this.UserId, this.petBreed, this.image, this.petBio, this.petDOB, this.petLocation, this.petColor, this.petWeight, this.petName, this.pedigree, this.vaccinated, this.petGender});
+
+
   @override
-  _PetProfile1State createState() => _PetProfile1State();
+  _PetProfile1State createState() => _PetProfile1State(
+    petDOB : this.petDOB.toDate(),
+
+  );
 }
 
 class _PetProfile1State extends State<PetProfile1> {
   bool _isOpen = false;
   PanelController _panelController = PanelController();
+  int petYr;
+  int petMonth;
+  int petDay;
+  String PetID;
+  DateTime petDOB;
+  _PetProfile1State({
+    this.petDOB,
+    this.PetID,
+  });
+
+
+  void initState() {
+    super.initState();
+    getInfo();
+  }
+
+  getInfo(){
+    petYr=DateTime.now().year-petDOB.year;
+    petMonth=DateTime.now().month-petDOB.month;
+    petDay=DateTime.now().day-petDOB.day;
+    if(petDay<0){
+      petMonth=petMonth-1;
+      if(petMonth<0) {
+        petYr=petYr-1;
+        petMonth=12+petMonth;
+      }}
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        brightness: Brightness.light,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: GestureDetector(
@@ -29,21 +76,25 @@ class _PetProfile1State extends State<PetProfile1> {
           },
           child: Icon(
             Icons.arrow_back,
-            color: Colors.grey[800],
+            color: Colors.pink,
           ),
         ),
         actions: [
+          currentUser.id == widget.UserId ?
           Padding(
             padding: EdgeInsets.only(right: 16),
             child: GestureDetector(
               onTap: () => handleDeletePet(context),
               child: Icon(
                 Icons.more_vert,
-                color: Colors.grey[800],
+                color: Colors.pink,
               ),
             ),
-          ),
-        ],
+          ) : Padding(
+            padding: EdgeInsets.only(right: 16),
+
+          )
+        ] ,
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -60,15 +111,12 @@ class _PetProfile1State extends State<PetProfile1> {
               ),
             ),
           ),
-
           FractionallySizedBox(
             alignment: Alignment.bottomCenter,
             heightFactor: 0.3,
             child: Container(
             ),
           ),
-
-          /// Sliding Panel
           SlidingUpPanel(
             controller: _panelController,
             color: Theme.of(context).backgroundColor,
@@ -76,7 +124,7 @@ class _PetProfile1State extends State<PetProfile1> {
               topRight: Radius.circular(40),
               topLeft: Radius.circular(40),
             ),
-            minHeight: MediaQuery.of(context).size.height * 0.35,
+            minHeight: MediaQuery.of(context).size.height * 0.39,
             maxHeight: MediaQuery.of(context).size.height * 0.85,
             body: GestureDetector(
               onTap: () => _panelController.close(),
@@ -107,27 +155,32 @@ class _PetProfile1State extends State<PetProfile1> {
   }
 
   SingleChildScrollView _panelBody(ScrollController controller) {
-    double hPadding = 40;
     return SingleChildScrollView(
       controller: controller,
       physics: ClampingScrollPhysics(),
       child: Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.symmetric(horizontal: hPadding),
+            padding: EdgeInsets.symmetric(horizontal: 40),
             child: Column(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 SizedBox(height: 40,),
-                _titleSection(),
+                titleSection(),
                 SizedBox(height: 40,),
-                _infoSection(),
+                infoSection(),
+                SizedBox(height: 30,),
+                pedigree(),
                 SizedBox(height: 40,),
-                _actionSection(),
-                SizedBox(height: 60,),
+                petStorySection(),
+                SizedBox(height: 40,),
                 OutlinedButton(
-                    onPressed: () {print('Edit Pet Profile Page');},
+                    onPressed: () {
+                      print('Edit Pet Profile Page');
+                      print(petYr);
+                      print(widget.petDOB.toString());},
                     child: Text("Edit Pet Profile",  style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 15)))
               ],
             ),
@@ -138,7 +191,7 @@ class _PetProfile1State extends State<PetProfile1> {
     );
   }
 
-   _actionSection() {
+  petStorySection() {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
@@ -158,44 +211,74 @@ class _PetProfile1State extends State<PetProfile1> {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               widget.petBio,
-              style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 14,),
+              style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 16,),
                 textAlign: TextAlign.center,
-
             ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Container(
+              alignment: Alignment.center,
+              width: 200,
+              child: Text(widget.petLocation, style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 15,),textAlign: TextAlign.center,)
           ),
         ],
       ),
     );
   }
 
-  Row _infoSection() {
+  pedigree() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Pedigree : ', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 17)),
+            widget.pedigree == true ? Icon(Icons.check, color: Colors.green,) : Icon(Icons.clear, color: Colors.red),
+            SizedBox(width: 40,),
+            Text('Vaccinated : ', style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 17)),
+            widget.vaccinated == true ? Icon(Icons.check, color: Colors.green) : Icon(Icons.clear, color: Colors.red),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Row infoSection() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        _infoCell(title: 'Age', value: '3 Years'),
+        _infoCell(
+            title: 'Age',
+            value: petYr > 1 ? '  $petYr Years \n$petMonth Months' : petYr ==1 ? '  $petYr Year \n$petMonth Months' :
+            petMonth>1 ? '$petMonth Months' : petMonth ==1 ? '$petMonth Month' : petDay>1 ? '$petDay Days' : petDay==1 ? '$petDay Day': '-'
+        ),
         Container(
           width: 1,
           height: 40,
           color: Colors.grey,
         ),
-        _infoCell(title: 'Color', value: "Golden"),
+        _infoCell(title: 'Color', value: widget.petColor),
         Container(
           width: 1,
           height: 40,
           color: Colors.grey,
         ),
-        _infoCell(title: 'Weight', value: '24 Kg'),
+        _infoCell(title: 'Weight', value: widget.petWeight + " Kg"),
       ],
     );
   }
 
   Column _infoCell({String title, String value}) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Text(
             title,
             style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w500,
-              fontSize: 14, color: Colors.pink)
+              fontSize: 17, color: Colors.pink)
         ),
         SizedBox(
           height: 8,
@@ -203,32 +286,43 @@ class _PetProfile1State extends State<PetProfile1> {
         Text(
           value,
           style: TextStyle(fontWeight: FontWeight.w700,
-            fontSize: 14,
+            fontSize: 16,
           ),
         ),
       ],
     );
   }
 
-  Column _titleSection() {
+  Column titleSection() {
     return Column(
       children: <Widget>[
-        Text(
-          'Bruno',
-          style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 30,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              widget.petName,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 30,
+              ),
+            ),
+            SizedBox(width: 5,),
+            widget.petGender == 'Male' ? Icon(Icons.male, color: Colors.blue,) : Icon(Icons.female, color: Colors.pink,),
+          ],
         ),
         SizedBox(
           height: 8,
         ),
         Text(
-          widget.petType,
-          style: TextStyle(
-            fontStyle: FontStyle.italic,
-            fontSize: 16,
-          ),
+          widget.petBreed,
+          style: Theme.of(context).textTheme.bodyText1.copyWith(fontStyle: FontStyle.italic, fontSize: 17)
+        ),
+        SizedBox(
+          height: 5,
+        ),
+        Text(
+            widget.petType,
+            style: Theme.of(context).textTheme.bodyText1.copyWith(fontStyle: FontStyle.italic, fontSize: 15)
         ),
       ],
     );
@@ -242,6 +336,8 @@ class _PetProfile1State extends State<PetProfile1> {
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
+                  deletePet();
+                  Navigator.pop(context);
                   print("Pet Deleted");
                   Navigator.pop(context);
                   //deletePost();
@@ -257,4 +353,23 @@ class _PetProfile1State extends State<PetProfile1> {
           );
         });
   }
+  deletePet() async {
+    FirebaseStorage.instance.ref().child('Pet Pictures').child("pet_$PetID.jpg").delete();
+    QuerySnapshot petSnapshot = await FirebaseFirestore.instance.collection('Pets').doc(widget.UserId).collection('Pet')
+        .where('PetId', isEqualTo: widget.PetId)
+        .get();
+    petSnapshot.docs.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    QuerySnapshot tinderSnapshot = await FirebaseFirestore.instance.collection('Tinder').where('PetId', isEqualTo: widget.PetId)
+        .get();
+    tinderSnapshot.docs.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
+
 }

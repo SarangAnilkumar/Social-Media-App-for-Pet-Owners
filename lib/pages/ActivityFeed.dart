@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:untitled1/pages/Home.dart';
 import 'package:untitled1/pages/PostScreen.dart';
 import 'package:untitled1/pages/ProfilePage.dart';
-import 'package:untitled1/pages/Home.dart';
 import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/widgets/HeaderWidget.dart';
 import 'package:flutter/material.dart';
@@ -14,98 +14,69 @@ class ActivityFeed extends StatefulWidget {
   _ActivityFeedState createState() => _ActivityFeedState();
 }
 
-class _ActivityFeedState extends State<ActivityFeed> with AutomaticKeepAliveClientMixin<ActivityFeed>{
+class _ActivityFeedState extends State<ActivityFeed>{
 
-  bool get wantKeepAlive => true;
-
-  getActivityFeed() async {
-    QuerySnapshot snapshot = await activityFeedReference
-        .doc(currentUser.id)
-        .collection('feedItems')
-        .orderBy('timestamp', descending: true)
-        .limit(50)
-        .get();
-    List<ActivityFeedItem> feedItems = [];
-    snapshot.docs.forEach((doc) {
-      feedItems.add(ActivityFeedItem.fromDoc(doc));
-      //print('Activity Feed Item: ${doc.data} ');
-    });
-
-    return feedItems;
-  }
+  Widget mediaPreview;
+  String activityItemText;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: header(context, titleText: "Activity Feed"),
-      body: Container(
-        child: FutureBuilder(
-          future: getActivityFeed(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return circularProgress();
-            }
-            return ListView(children: snapshot.data);
-          },
-        ),
-      ),
-    );
+        appBar: header(context, titleText: "Activity Feed"),
+        body: Container(
+          child: StreamBuilder(
+              stream: activityFeedReference.doc(currentUser.id).collection('feedItems').orderBy('timestamp', descending: true).snapshots(),
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                if (!snapshot.hasData) {
+                  return circularProgress();
+                }
+                return ListView(
+                  scrollDirection: Axis.vertical,
+                  children: snapshot.data.docs.map((doc) {
+                    configureMediaPreview(context, doc['type'], doc['mediaUrl'], doc['commentData'], doc['postId'], doc['ownerId'], );
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 2.0),
+                      child: Container(
+                        color: Theme.of(context).primaryColorLight,
+                        child: ListTile(
+                          title: GestureDetector(
+                            onTap: () => showProfile(context, profileId: doc['userId']),
+                            child: RichText(
+                              overflow: TextOverflow.ellipsis,
+                              text: TextSpan(
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                ),
+                                children: [
+                                  TextSpan(
+                                      text: doc['username'],
+                                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.pink)),
+                                  TextSpan(text: ' $activityItemText', style: Theme.of(context).textTheme.bodyText1)
+                                ],
+                              ),
+                            ),
+                          ),
+                          leading: CircleAvatar(
+                            backgroundImage: CachedNetworkImageProvider(doc['userProfileImg']),
+                          ),
+                          subtitle: Text(
+                            timeago.format(doc['timestamp'].toDate()),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: mediaPreview,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              }
+          ),
+        ));
   }
-}
-
-Widget mediaPreview;
-String activityItemText;
-
-class ActivityFeedItem extends StatelessWidget {
-  final String username;
-  final String userId;
-  final String type;
-  final String mediaUrl;
-  final String postId;
-  final String userProfileImg;
-  final String commentData;
-  final Timestamp timestamp;
-
-  ActivityFeedItem({
-    this.username,
-    this.userId,
-    this.type,
-    this.mediaUrl,
-    this.postId,
-    this.userProfileImg,
-    this.commentData,
-    this.timestamp,
-  });
-
-  factory ActivityFeedItem.fromDoc(DocumentSnapshot doc) {
-    return ActivityFeedItem(
-      username: doc['username'],
-      userId: doc['userId'],
-      type: doc['type'],
-      postId: doc['postId'],
-      userProfileImg: doc['userProfileImg'],
-      commentData: doc['commentData'],
-      timestamp: doc['timestamp'],
-      mediaUrl: doc['mediaUrl'],
-    );
-  }
-
-  showPost(context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostScreen(
-          postId: postId,
-          userId: userId,
-        ),
-      ),
-    );
-  }
-
-  configureMediaPreview(context) {
+  configureMediaPreview(context, type, mediaUrl, commentData, postId, userId) {
     if (type == "like" || type == "comment") {
       mediaPreview = GestureDetector(
-        onTap: () => showPost(context),
+        onTap: () => showPost(context, postId, userId),
         child: Container(
           height: 50.0,
           width: 50.0,
@@ -113,16 +84,17 @@ class ActivityFeedItem extends StatelessWidget {
             aspectRatio: 16 / 9,
             child: Container(
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
-                fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(mediaUrl),
-              )),
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(mediaUrl),
+                  )),
             ),
           ),
         ),
       );
     } else {
-      mediaPreview = Text("");
+      mediaPreview = SizedBox();
     }
     if (type == 'like') {
       activityItemText = "liked your post";
@@ -135,40 +107,13 @@ class ActivityFeedItem extends StatelessWidget {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    configureMediaPreview(context);
-    return Padding(
-      padding: EdgeInsets.only(bottom: 2.0),
-      child: Container(
-        color: Theme.of(context).primaryColorLight,
-        child: ListTile(
-          title: GestureDetector(
-            onTap: () => showProfile(context, profileId: userId),
-            child: RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(
-                style: TextStyle(
-                  fontSize: 14.0,
-                  color: Colors.black,
-                ),
-                children: [
-                  TextSpan(
-                      text: username,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: ' $activityItemText')
-                ],
-              ),
-            ),
-          ),
-          leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(userProfileImg),
-          ),
-          subtitle: Text(
-            timeago.format(timestamp.toDate()),
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: mediaPreview,
+  showPost(context, postId, userId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PostScreen(
+          postId: postId,
+          userId: userId,
         ),
       ),
     );
@@ -180,6 +125,10 @@ showProfile(BuildContext context, {String profileId}) {
       context,
       MaterialPageRoute(
           builder: (context) => ProfilePage(
-                userProfileId: profileId,
-              )));
+            userProfileId: profileId,
+          )));
 }
+
+
+
+

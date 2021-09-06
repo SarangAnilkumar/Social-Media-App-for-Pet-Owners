@@ -1,18 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:untitled1/PetStuff/PetProfile.dart';
 import 'package:untitled1/PetStuff/PetProfile1.dart';
 import 'package:untitled1/PetStuff/PetRegistration.dart';
-import 'package:untitled1/models/pet.dart';
 import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/EditProfilePage.dart';
-import 'package:untitled1/pages/Home.dart';
-import 'package:untitled1/widgets/HeaderWidget.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled1/pages/Home.dart';
+import 'package:untitled1/pages/Login.dart';
+import 'package:untitled1/widgets/HeaderWidget.dart';
 import 'package:untitled1/widgets/PostTileWidget.dart';
 import 'package:untitled1/widgets/PostWidget.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
-import 'package:untitled1/pages/Login.dart';
 
 class ProfilePage extends StatefulWidget {
   final String userProfileId;
@@ -32,6 +32,8 @@ class _ProfilePageState extends State<ProfilePage> {
   int followingCount = 0;
   List<Post> postsList = [];
   String postOrientation = "grid";
+
+
 
   void initState() {
     super.initState();
@@ -81,19 +83,46 @@ class _ProfilePageState extends State<ProfilePage> {
         }
         useri user = useri.fromDocument(dataSnapshot.data);
         return Padding(
-          padding: EdgeInsets.all(17.0),
+          padding: EdgeInsets.all(17.0).copyWith(top: 40),
           child: Column(
             children: <Widget>[
+              CircleAvatar(
+                radius: 60.0,
+                backgroundColor: Theme.of(context).primaryColorLight,
+                backgroundImage: CachedNetworkImageProvider(user.url),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 13.0) ,
+                child: Text(
+                  user.profileName,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      .copyWith(fontSize: 22, fontWeight: FontWeight.w500),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 5.0, bottom: 10),
+                child: Text(
+                  '@${user.username}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      .copyWith(fontSize: 18),
+                ),
+              ),
+              user.bio == "" ? SizedBox() :Container(
+                padding: EdgeInsets.only(top: 5.0, bottom: 10),
+                child: Text(
+                  user.bio,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      .copyWith(fontSize: 15),
+                ),
+              ),
               Row(
                 children: <Widget>[
-                  CircleAvatar(
-                    radius: 40.0,
-                    backgroundColor: Theme.of(context).primaryColorLight,
-                    backgroundImage: user.url== null
-                        ? AssetImage("assets/profile.jpeg")
-                        : CachedNetworkImageProvider(user.url),
-
-                  ),
                   Expanded(
                     flex: 1,
                     child: Column(
@@ -118,39 +147,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   )
                 ],
               ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 13.0),
-                child: Text(
-                  (user.username != null) ? user.username : 'Null',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline1
-                      .copyWith(fontSize: 15),
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 5.0),
-                child: Text(
-                  user.profileName,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline1
-                      .copyWith(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 3.0),
-                child: Text(
-                  user.bio,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline1
-                      .copyWith(fontSize: 17, fontWeight: FontWeight.w500),
-                ),
-              ),
             ],
           ),
         );
@@ -158,29 +154,44 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Column createColumns(String title, int count) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          count.toString(),
-          style: Theme.of(context)
-              .textTheme
-              .headline1
-              .copyWith(fontSize: 20.0, fontWeight: FontWeight.bold),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 5.0),
-          child: Text(
-            title,
-            style: Theme.of(context)
-                .textTheme
-                .headline1
-                .copyWith(fontSize: 16.0, fontWeight: FontWeight.w400),
+  createColumns(String title, int count) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Material(
+        elevation: 3,
+        borderRadius: BorderRadius.circular(25),
+        child: Container(
+          height: 75,
+          width: 100,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1),)]
           ),
-        )
-      ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                count.toString(),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1
+                    .copyWith(fontSize: 20.0, fontWeight: FontWeight.bold),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 5.0),
+                child: Text(
+                  title,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      .copyWith(fontSize: 16.0, fontWeight: FontWeight.w600),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -227,11 +238,11 @@ class _ProfilePageState extends State<ProfilePage> {
         .doc(widget.userProfileId)
         .collection('feedItems')
         .doc(currentOnlineUserId)
-          ..get().then((doc) {
-            if (doc.exists) {
-              doc.reference.delete();
-            }
-          });
+      ..get().then((doc) {
+        if (doc.exists) {
+          doc.reference.delete();
+        }
+      });
   }
 
   handleFollowUser() {
@@ -257,25 +268,28 @@ class _ProfilePageState extends State<ProfilePage> {
       "ownerId": widget.userProfileId,
       "username": currentUser.username,
       "userId": currentOnlineUserId,
+      "commentData": '',
+      "mediaUrl": '',
+      "postId": '',
       "userProfileImg": currentUser.url,
       "timestamp": timestamp,
     });
   }
 
-  Container editProfile({String title, Function performFunction}) {
-    return Container(
-      padding: EdgeInsets.only(top: 3.0),
-      child: TextButton(
+  editProfile({String title, Function performFunction}) {
+    return TextButton(
         onPressed: performFunction,
         child: Container(
-          width: 245.0,
-          height: 26.0,
+          padding: EdgeInsets.all(5.0),
+          width: 330.0,
+          height: 35.0,
           child: Text(
             title,
+            textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline1.copyWith(
                 color: isFollowing ? Colors.black : Colors.white,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w600),
+                fontSize: 15.0,
+                fontWeight: FontWeight.w800),
           ),
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -283,11 +297,10 @@ class _ProfilePageState extends State<ProfilePage> {
             border: Border.all(
               color: isFollowing ? Colors.grey : Colors.pinkAccent,
             ),
-            borderRadius: BorderRadius.circular(6.0),
+            borderRadius: BorderRadius.circular(8.0),
           ),
         ),
-      ),
-    );
+      );
   }
 
   editUserProfile() {
@@ -301,18 +314,14 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          header(context, titleText: "Profile", disappearedBackButton: false),
       body: ListView(
         children: <Widget>[
           createProfileTopView(),
           Divider(),
           myPet(),
           Divider(),
-          createListAndGridPostOrientation(),
-          Divider(
-            height: 0.0,
-          ),
+          //createListAndGridPostOrientation(),
+          //Divider(height: 0.0,),
           displayProfilePost(),
         ],
       ),
@@ -321,6 +330,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   myPet() {
     bool ownProfile = currentOnlineUserId == widget.userProfileId;
+
     return Column(
       children: [
         Text(
@@ -331,145 +341,73 @@ class _ProfilePageState extends State<ProfilePage> {
               .copyWith(fontWeight: FontWeight.bold, fontSize: 15),
         ),
         SizedBox(
-          height: 10,
+          height: 5,
         ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
               if(ownProfile)
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PetRegistration()));
-                },
-                child: CircleAvatar(
-                  backgroundColor: Colors.grey[600],
-                  child: Icon(Icons.add,size: 30,),
-                  radius: 35,
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PetRegistration(ownerUsername: currentUser.username, ownerEmail: currentUser.email, ownerName: currentUser.profileName,)));
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: Colors.grey[700],
+                    child: Icon(Icons.add,size: 30,),
+                    radius: 35,
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PetProfile(
-                                petType: "Siberian Husky",
-                                image: AssetImage("assets/images/Husky.jpg"),
-                                petBio:
-                                    "The Siberian Husky is a medium-sized working sled dog breed. The breed belongs to the Spitz genetic family. It is recognizable by its thickly furred double coat, erect triangular ears, and distinctive markings, and is smaller than the similar-looking Alaskan Malamute.",
-                              )));
-                },
-                child: CircleAvatar(
-                  radius: 35,
-                  backgroundImage: AssetImage("assets/images/Husky.jpg"),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PetProfile1(
-                                petType: "Golden Retriever",
-                                image: AssetImage(
-                                    "assets/images/goldenretriever.jpg"),
-                                petBio:
-                                    "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
-                              )));
-                },
-                child: CircleAvatar(
-                  radius: 35,
-                  backgroundImage:
-                      AssetImage("assets/images/goldenretriever.jpg"),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PetProfile(
-                                petType: "Rottweiler",
-                                image:
-                                    AssetImage("assets/images/rottweiler.jpg"),
-                                petBio:
-                                    "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
-                              )));
-                },
-                child: CircleAvatar(
-                  radius: 35,
-                  backgroundImage: AssetImage("assets/images/rottweiler.jpg"),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PetProfile(
-                                petType: "Samoyed",
-                                image: AssetImage("assets/images/Samoyed.jpg"),
-                                petBio:
-                                    "The Samoyed is a breed of medium-sized herding dogs with thick, white, double-layer coats. They are related to the laika, a spitz-type dog. It takes its name from the Samoyedic peoples of Siberia. These nomadic reindeer herders bred the fluffy white dogs to help with herding.",
-                              )));
-                },
-                child: CircleAvatar(
-                  radius: 35,
-                  backgroundImage: AssetImage("assets/images/Samoyed.jpg"),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PetProfile(
-                                petType: "Golden Retriever",
-                                image: AssetImage(
-                                    "assets/images/photo-1510771463146-e89e6e86560e.jpg"),
-                                petBio:
-                                    "The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name 'retriever' refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.",
-                              )));
-                },
-                child: CircleAvatar(
-                  radius: 35,
-                  backgroundImage: AssetImage(
-                      "assets/images/photo-1510771463146-e89e6e86560e.jpg"),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PetProfile1(
-                                petType: "Rottweiler",
-                                image:
-                                    AssetImage("assets/images/rottweiler.jpg"),
-                                petBio:
-                                    "The Rottweiler is a breed of domestic dog, regarded as medium-to-large or large. The dogs were known in German as Rottweiler Metzgerhund, meaning Rottweil butchers' dogs, because their main use was to herd livestock and pull carts laden with butchered meat to market.",
-                              )));
-                },
-                child: CircleAvatar(
-                  radius: 35,
-                  backgroundImage: AssetImage("assets/images/rottweiler.jpg"),
-                ),
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection('Pets').doc(widget.userProfileId).collection('Pet').orderBy("RegistrationDate", descending: true).snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
+                    if(!snapshot.hasData){
+                      return Text("");
+                    }
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 90,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: snapshot.data.docs.map((document) {
+                          return TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PetProfile1(
+                                        UserId: widget.userProfileId,
+                                        PetId: document['PetId'],
+                                        petBreed: document['PetBreed'],
+                                        petType: document['PetType'],
+                                        image: NetworkImage(document['url']),
+                                        petBio: document['PetBio'],
+                                        petDOB: document['DOB'],
+                                        petLocation: document['PetLocation'],
+                                        petName: document['PetName'],
+                                        pedigree: document['Pedigree'],
+                                        vaccinated: document['Vaccinated'],
+                                        petGender: document['PetGender'],
+                                        petColor: document['PetColor'],
+                                        petWeight: document['PetWeight'],
+                                      )));
+                            },
+                            child: CircleAvatar(
+                              radius: 35,
+                              backgroundColor: Theme.of(context).primaryColorLight,
+                              backgroundImage: NetworkImage(document['url']),
+                            ),
+                          );
+                          //Text(document['Title']);
+                          //PetEventCard();
+                        }).toList(),
+                      ),
+                    );
+                  }
               ),
             ],
           ),
@@ -512,20 +450,29 @@ class _ProfilePageState extends State<ProfilePage> {
       postsList.forEach((eachPost) {
         gridTiles.add(GridTile(child: PostTile(eachPost)));
       });
-      return GridView.count(
+      return StaggeredGridView.count(
         crossAxisCount: 3,
-        childAspectRatio: 1.0,
-        mainAxisSpacing: 1.5,
-        crossAxisSpacing: 1.5,
+        staggeredTiles: _staggeredTiles,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         children: gridTiles,
       );
-    } else if (postOrientation == "list") {
+        /*GridView.count(
+        crossAxisCount: 3,
+        childAspectRatio: 1.0,
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: gridTiles,
+      );*/
+    } /*else if (postOrientation == "list") {
       return Column(
         children: postsList,
       );
-    }
+    }*/
   }
 
   getAllProfilePosts() async {
@@ -570,6 +517,39 @@ class _ProfilePageState extends State<ProfilePage> {
       this.postOrientation = orientation;
     });
   }
+
+  static const List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 2),
+    StaggeredTile.count(2, 2),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 2),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(2, 2),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 2),
+    StaggeredTile.count(2, 2),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 2),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(2, 2),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 2),
+    StaggeredTile.count(2, 2),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 2),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(1, 1),
+    StaggeredTile.count(2, 2),
+    StaggeredTile.count(1, 1),
+  ];
 
 }
 
