@@ -5,12 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:untitled1/controllers/authentications.dart';
 import 'package:untitled1/pages/Home.dart';
 import 'package:untitled1/pages/Login.dart';
-import 'package:image/image.dart' as ImD;
-import 'package:uuid/uuid.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -19,16 +16,16 @@ class SignUp extends StatefulWidget {
 
 class _LoginState extends State<SignUp> {
 
-  GlobalKey<FormState> formkey = GlobalKey<FormState>();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool uploading = false;
   File file;
-  String ID = Uuid().v4();
-
   String email;
   String password;
   String name;
   String username;
   String bio;
+  String path;
+  String imageUrl='';
   bool _isHidden = true;
   void _togglePasswordView() {
     setState(() {
@@ -85,11 +82,12 @@ class _LoginState extends State<SignUp> {
               SizedBox(
                 height: 30,
               ),
-              imageProfile(),
+              //imageProfile(),
+              userImage(),
               Container(
                 width: MediaQuery.of(context).size.width * 0.90,
                 child: Form(
-                  key: formkey,
+                  key: formKey,
                   child: Column(
                     children: <Widget>[
                       Container(
@@ -117,13 +115,8 @@ class _LoginState extends State<SignUp> {
                               color: Colors.pinkAccent,
                             ),
                           ),
-                          validator: (_val) {
-                            if (_val.isEmpty) {
-                              return "Can't be empty";
-                            } else {
-                              return null;
-                            }
-                          },
+                          validator: RequiredValidator(
+                              errorText: "This Field Is Required."),
                           onChanged: (val) {
                             name = val;
                           },
@@ -157,13 +150,12 @@ class _LoginState extends State<SignUp> {
                               color: Colors.pinkAccent,
                             ),
                           ),
-                          validator: (_val) {
-                            if (_val.isEmpty) {
-                              return "Can't be empty";
-                            } else {
-                              return null;
-                            }
-                          },
+                          validator: MultiValidator([
+                            RequiredValidator(
+                                errorText: "This Field Is Required."),
+                            EmailValidator(
+                                errorText: "Invalid Email format")
+                          ]),
                           onChanged: (val) {
                             email = val;
                           },
@@ -243,13 +235,13 @@ class _LoginState extends State<SignUp> {
                               color: Colors.pinkAccent,
                             ),
                           ),
-                          validator: (_val) {
+                          /*validator: (_val) {
                             if (_val.isEmpty) {
                               return "Can't be empty";
                             } else {
                               return null;
                             }
-                          },
+                          },*/
                           onChanged: (val) {
                             username = val;
                           },
@@ -284,13 +276,13 @@ class _LoginState extends State<SignUp> {
                               color: Colors.pinkAccent,
                             ),
                           ),
-                          validator: (_val) {
+                          /*validator: (_val) {
                             if (_val.isEmpty) {
                               return "Can't be empty";
                             } else {
                               return null;
                             }
-                          },
+                          },*/
                           onChanged: (val) {
                             bio = val;
                           },
@@ -305,7 +297,11 @@ class _LoginState extends State<SignUp> {
                         width: 2000,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: controlUploadAndSave,
+                          onPressed: () {
+                            if (formKey.currentState != null && formKey.currentState.validate()){
+                              _uploadFile();
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15.0)),
@@ -376,165 +372,19 @@ class _LoginState extends State<SignUp> {
     );
   }
 
-  /*Future<void> signUpWithMail() async {
-    try {
-      UserCredential result = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-          email: mailController.text, password: passwordController.text);
-      User user = result.user;
-      circularProgress();
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => SignUp1(uid: user.uid, email: user.email)));
-      circularProgress();
-    } catch (e) {
-      print(e.message);
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text(e.message),
-            );
-          });
-    }
-  }*/
 
-
-  Widget imageProfile() {
-    return Center(
-      child: Stack(children: <Widget>[
-        CircleAvatar(
-          radius: 50.0,
-          backgroundColor: Colors.grey,
-          backgroundImage: file == null
-              ? AssetImage("assets/images/profilepic.png",)
-              : FileImage(File(file.path)),
-        ),
-        Positioned(
-          bottom: 4.0,
-          right: 5.0,
-          child: InkWell(
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                builder: ((builder) => bottomSheet()),
-              );
-            },
-            child: Icon(
-              Icons.camera_alt,
-              color: Colors.pink,
-              size: 30.0,
-            ),
-          ),
-        ),
-      ]),
-    );
-  }
-
-  Widget bottomSheet() {
-    return Container(
-      height: 100.0,
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      child: Column(
-        children: <Widget>[
-          Text(
-            "Choose Profile photo",
-            style: TextStyle(
-              fontSize: 20.0,
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                TextButton.icon(
-                  icon: Icon(Icons.camera, color: Colors.pink,),
-                  onPressed: () {
-                    takePhoto(ImageSource.camera);
-                    Navigator.pop(context);
-                  },
-                  label: Text("Camera", style: TextStyle(color: Colors.pink),),
-                ),
-                TextButton.icon(
-                  icon: Icon(Icons.image, color: Colors.pink,),
-                  onPressed: () {
-                    takePhoto(ImageSource.gallery);
-                    Navigator.pop(context);
-                  },
-                  label: Text("Gallery", style: TextStyle(color: Colors.pink),),
-                ),
-              ])
-        ],
-      ),
-    );
-  }
-
-  void takePhoto(ImageSource source) async {
-    final _picker = ImagePicker();
-    PickedFile pickedFile = await _picker.getImage(
-      source: ImageSource.gallery,
-    );
-    final File imageFile = File(pickedFile.path);
-    setState(() {
-      this.file = imageFile;
-    });
-  }
-
-  controlUploadAndSave() async {
-    setState(() {
-      uploading = true;
-    });
-    await compressingPhoto();
-    String downloadUrl = await uploadPhoto(file);
-    saveInfoToFireStore(
-      url: downloadUrl,
-    );
-    setState(() {
-      file = null;
-      uploading = false;
-      ID = Uuid().v4();
-    });
-    Login();
-  }
-
-  compressingPhoto() async {
-    final tDirectory = await getTemporaryDirectory();
-    final path = tDirectory.path;
-    ImD.Image mImageFile = ImD.decodeImage(file.readAsBytesSync());
-    final compressedImageFile = File('$path/img_$ID.jpg')
-      ..writeAsBytesSync(ImD.encodeJpg(mImageFile, quality: 60));
-    setState(() {
-      file = compressedImageFile;
-    });
-  }
-
-  Future<String> uploadPhoto(mImageFile) async {
-    UploadTask mstorageUploadTask =
-    storageProfileReference.child("profile_$ID.jpg").putFile(mImageFile);
-    TaskSnapshot storageTaskSnapshot = await mstorageUploadTask;
-    String downloadUrl = await storageTaskSnapshot.ref.getDownloadURL();
-    return downloadUrl;
-  }
-
-  saveInfoToFireStore({String url}) {
-    if (formkey.currentState.validate()) {
-      formkey.currentState.save();
+  saveInfoToFireStore() {
+    if (formKey.currentState.validate()) {
+      formKey.currentState.save();
       signUp(email.trim(), password, context).then((value) {
         if (value != null) {
           usersReference.doc(value.uid).set({
             "id": value.uid,
             "profileName": name,
-            "username": username,
-            "url": url,
+            "username": (username == null) ? 'Un-Named' : username,
+            "url": (imageUrl == null) ? "https://firebasestorage.googleapis.com/v0/b/petapp-c627e.appspot.com/o/Profile%20Pictures%2Fprofile_qwerty%40gmail.com.jpg?alt=media&token=40c9bc83-6673-46f1-9607-c3936846c07d" : imageUrl,
             "email": email,
-            "bio": bio,
+            "bio": (bio == null) ? '' : bio,
             "timestamp": timestamp,
           });
           Navigator.pushReplacement(
@@ -551,5 +401,107 @@ class _LoginState extends State<SignUp> {
         content: const Text('Registered Successfully !'),
       ),
     );
+  }
+
+  userImage(){
+    return Center(
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 50.0,
+            backgroundColor: Colors.grey,
+            backgroundImage: file == null
+                ? AssetImage("assets/images/profilepic.png",)
+                : FileImage(File(file.path)),
+          ),
+
+          InkWell(
+            onTap: () => _selectPhoto(),
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text('Select Photo',
+                  style: Theme.of(context).textTheme.bodyText1),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Future _selectPhoto() async {
+    showModalBottomSheet(
+      context: context,
+      builder: ((builder) => Container(
+        height: 100.0,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 20,
+        ),
+        child: Column(
+          children: <Widget>[
+            Text(
+              "Choose Profile photo",
+              style: TextStyle(
+                fontSize: 20.0,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  TextButton.icon(
+                    icon: Icon(Icons.camera, color: Colors.pink,),
+                    onPressed: () {
+                      _pickImage(ImageSource.camera);
+                      Navigator.pop(context);
+                    },
+                    label: Text("Camera", style: TextStyle(color: Colors.pink),),
+                  ),
+                  TextButton.icon(
+                    icon: Icon(Icons.image, color: Colors.pink,),
+                    onPressed: () {
+                      _pickImage(ImageSource.gallery);
+                      Navigator.pop(context);
+                    },
+                    label: Text("Gallery", style: TextStyle(color: Colors.pink),),
+                  ),
+                ])
+          ],
+        ),
+      )),
+    );
+  }
+
+  Future _pickImage(ImageSource source) async {
+    final ImagePicker _picker = ImagePicker();
+    final pickedFile = await _picker.pickImage(source: source,);
+    if (pickedFile == null) {
+      return;
+    }
+    final File imageFile = File(pickedFile.path);
+    setState(() {
+      this.file = imageFile;
+    });
+    setState(() {
+      path = imageFile.path;
+    });
+  }
+
+  Future _uploadFile() async {
+
+    final ref = FirebaseStorage.instance.ref().child('Profile Pictures')
+        .child("profile_$email.jpg");
+
+    final result = await ref.putFile(File(path));
+    final fileUrl = await result.ref.getDownloadURL();
+
+    setState(() {
+      imageUrl = fileUrl;
+    });
+
+    saveInfoToFireStore();
   }
 }

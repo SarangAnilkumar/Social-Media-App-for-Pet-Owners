@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:untitled1/controllers/authentications.dart';
 import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/Home.dart';
 import 'package:untitled1/pages/Login.dart';
@@ -162,11 +164,30 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   logoutUser() async {
-    await gSignIn.signOut();
+    //await gSignIn.signOut();
+    User user = await auth.currentUser;
+    print(user.providerData[0].providerId);
+    if (user.providerData[0].providerId == 'google.com') {
+      await gSignIn.disconnect();
+    }
+    await auth.signOut();
+    Phoenix.rebirth(context);
+    return Future.value(true);
     // Navigator.push(
     //     context, MaterialPageRoute(builder: (context) => TestLogin()));
-    Phoenix.rebirth(context);
+
   }
+
+  /*Future<bool> signOutUser() async {
+    User user = await auth.currentUser;
+    print(user.providerData[1].providerId);
+    if (user.providerData[1].providerId == 'google.com') {
+      await gooleSignIn.disconnect();
+    }
+    await auth.signOut();
+    return Future.value(true);
+    Phoenix.rebirth(context);
+  }*/
 
   Column createProfileNameTextFormField() {
     return Column(

@@ -57,19 +57,19 @@ class Post extends StatefulWidget {
 
   @override
   _PostState createState() => _PostState(
-        postId: this.postId,
-        ownerId: this.ownerId,
-        likes: this.likes,
-        username: this.username,
-        description: this.description,
-        location: this.location,
-        url: this.url,
-        likeCount: getTotalNumberOfLikes(this.likes),
-      );
+    postId: this.postId,
+    ownerId: this.ownerId,
+    likes: this.likes,
+    username: this.username,
+    description: this.description,
+    location: this.location,
+    url: this.url,
+    likeCount: getTotalNumberOfLikes(this.likes),
+  );
 }
 
 class _PostState extends State<Post> {
-  final String currentUserId = currentUser?.id;
+  final String currentUserId = currentUser.id;
   final String postId;
   final String ownerId;
   Map likes;
@@ -80,6 +80,7 @@ class _PostState extends State<Post> {
   int likeCount;
   bool _isLiked;
   bool showHeart = false;
+  useri user;
 
   _PostState({
     this.postId,
@@ -134,15 +135,15 @@ class _PostState extends State<Post> {
             ),
           ),
           subtitle:
-              Text(location, style: Theme.of(context).textTheme.bodyText1),
+          Text(location, style: Theme.of(context).textTheme.bodyText1),
           trailing: isPostOwner
               ? IconButton(
-                  icon: Icon(
-                    Icons.more_vert,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () => handleDeletePost(context),
-                )
+            icon: Icon(
+              Icons.more_vert,
+              color: Colors.grey,
+            ),
+            onPressed: () => handleDeletePost(context),
+          )
               : Text(""),
         );
       },
@@ -260,23 +261,38 @@ class _PostState extends State<Post> {
     }
   }
 
+
+  void initState() {
+    super.initState();
+    //getUserInfo();
+  }
+
+  /*getUserInfo() async {
+    DocumentSnapshot documentSnapshot =
+    await usersReference.doc(currentUser.id).get();
+    user = useri.fromDocument(documentSnapshot);
+    username1 = own;
+    url1 = user.url;
+    id1 = user.id;
+  }*/
+
   addLikeToActivityFeed() {
     bool isNotPostOwner = currentUserId != ownerId;
-    if (isNotPostOwner) {
+    //if (isNotPostOwner) {
       activityFeedReference
           .doc(ownerId)
           .collection("feedItems")
           .doc(postId)
           .set({
         "type": "like",
-        "username": currentUser.username,
-        "userId": currentUser.id,
-        "userProfileImg": currentUser.url,
+        "username": username,
+        "userId": currentUserId,
+        "userProfileImg": url,
         "postId": postId,
         "mediaUrl": url,
         "timestamp": timestamp,
       });
-    }
+    //}
   }
 
   removeLikeFromActivityFeed() {
@@ -304,10 +320,10 @@ class _PostState extends State<Post> {
           cachedNetworkImage(url),
           showHeart
               ? Icon(
-                  Icons.favorite,
-                  size: 100.0,
-                  color: Colors.red,
-                )
+            Icons.favorite,
+            size: 100.0,
+            color: Colors.red,
+          )
               : Text(""),
         ],
       ),
@@ -315,73 +331,90 @@ class _PostState extends State<Post> {
   }
 
   createPostFooter() {
-    return Column(
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 40.0, left: 20.0),
-            ),
-            GestureDetector(
-              onTap: handleLikePost,
-              child: Icon(
-                _isLiked ? Icons.favorite : Icons.favorite_border,
-                size: 28.0,
-                color: Colors.pink,
+
+    return FutureBuilder(
+        future: usersReference.doc(ownerId).get(),
+        builder: (context, dataSnapshot) {
+          if (!dataSnapshot.hasData) {
+            return circularProgress();
+          }
+          useri user = useri.fromDocument(dataSnapshot.data);
+          bool isPostOwner = currentUserId == ownerId;
+
+          return Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 40.0, left: 20.0),
+                  ),
+                  GestureDetector(
+                    onTap: handleLikePost,
+                    child: Icon(
+                      _isLiked ? Icons.favorite : Icons.favorite_border,
+                      size: 28.0,
+                      color: Colors.pink,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 20.0),
+                  ),
+                  GestureDetector(
+                    onTap: () =>
+                        showComments(
+                          context,
+                          postId: postId,
+                          ownerId: ownerId,
+                          mediaUrl: url,
+                        ),
+                    child: Icon(
+                      Icons.chat_outlined,
+                      size: 28.0,
+                      color: Colors.pink,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(right: 20.0),
-            ),
-            GestureDetector(
-              onTap: () => showComments(
-                context,
-                postId: postId,
-                ownerId: ownerId,
-                mediaUrl: url,
+              Row(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(left: 20.0),
+                    child: Text("$likeCount likes",
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1
+                            .copyWith(fontWeight: FontWeight.bold)),
+                  ),
+                ],
               ),
-              child: Icon(
-                Icons.chat_outlined,
-                size: 28.0,
-                color: Colors.pink,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(left: 20.0),
+                    child: Text(user.username+ " ",
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .bodyText1
+                          .copyWith(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(description,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1
+                            .copyWith(fontSize: 15)),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-        Row(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 20.0),
-              child: Text("$likeCount likes",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      .copyWith(fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 20.0),
-              child: Text("$username ",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16)),
-            ),
-            Expanded(
-              child: Text(description,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1
-                      .copyWith(fontSize: 15)),
-            ),
-          ],
-        ),
-      ],
+            ],
+          );
+        }
     );
   }
 }

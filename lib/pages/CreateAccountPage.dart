@@ -12,13 +12,12 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String username;
-  String tempUsername;
 
   submitUsername() {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      username = tempUsername;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Welcome ' + username),
@@ -36,8 +35,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Widget build(BuildContext parentContext) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar:
-          header(context, titleText: "Settings", disappearedBackButton: true),
       body: ListView(
         children: <Widget>[
           Container(
@@ -60,7 +57,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                       autovalidateMode: AutovalidateMode.always,
                       child: TextFormField(
                         onChanged: (value) {
-                          tempUsername = value;
+                          username = value;
                         },
                         // style: TextStyle(color: Colors.white),
                         validator: (val) {

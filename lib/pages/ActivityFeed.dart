@@ -114,9 +114,9 @@ class ActivityFeedItem extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                   image: DecorationImage(
-                fit: BoxFit.cover,
-                image: CachedNetworkImageProvider(mediaUrl),
-              )),
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(mediaUrl),
+                  )),
             ),
           ),
         ),
@@ -180,6 +180,6 @@ showProfile(BuildContext context, {String profileId}) {
       context,
       MaterialPageRoute(
           builder: (context) => ProfilePage(
-                userProfileId: profileId,
-              )));
+            userProfileId: profileId,
+          )));
 }

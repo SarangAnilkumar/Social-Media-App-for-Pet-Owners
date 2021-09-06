@@ -17,6 +17,13 @@ import 'package:uuid/uuid.dart';
 import 'package:image/image.dart' as ImD;
 
 class PetRegistration extends StatefulWidget {
+
+  String ownerUsername;
+  String ownerName;
+  String ownerEmail;
+
+  PetRegistration({@required this.ownerUsername, this.ownerName, this.ownerEmail});
+
   @override
   _PetRegistrationState createState() => _PetRegistrationState();
 }
@@ -67,6 +74,7 @@ class _PetRegistrationState extends State<PetRegistration> with AutomaticKeepAli
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -348,11 +356,11 @@ class _PetRegistrationState extends State<PetRegistration> with AutomaticKeepAli
               Container(
                 child: Column(
                   children: [
-                    Text("Name : " + currentUser.profileName),
+                    Text("Name : " + widget.ownerName),
                     SizedBox(height: 5,),
-                    Text("Username : " + currentUser.username),
+                    Text("Username : " + widget.ownerUsername),
                     SizedBox(height: 5,),
-                    Text("Email ID : " + currentUser.email)
+                    Text("Email ID : " + widget.ownerEmail)
                   ],
                 ),
               ),
@@ -544,7 +552,7 @@ class _PetRegistrationState extends State<PetRegistration> with AutomaticKeepAli
       petId = Uuid().v4();
     });
     ProfilePage(
-      userProfileId: currentUser?.id,
+      userProfileId:currentUser.id
     );
   }
 
@@ -571,7 +579,7 @@ class _PetRegistrationState extends State<PetRegistration> with AutomaticKeepAli
       petReference
           .doc(currentUser.id)
           .collection('Pet')
-          .doc(petId)
+          .doc(currentUser.id)
           .set({
         'PetType': petType,
         'PetGender': petGender,

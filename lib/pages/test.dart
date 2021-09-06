@@ -533,9 +533,9 @@ class _ProfilePageState extends State<ProfilePage> {
       loading = true;
     });
 
-    QuerySnapshot querySnapshot = await postsReference
+    QuerySnapshot querySnapshot = await petReference
         .doc(widget.userProfileId)
-        .collection("usersPosts")
+        .collection("Pet")
         .orderBy("timestamp", descending: true)
         .get();
     setState(() {

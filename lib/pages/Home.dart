@@ -11,6 +11,7 @@ import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/pages/TimeLine.dart';
 
 final usersReference = FirebaseFirestore.instance.collection('users');
+final petReference = FirebaseFirestore.instance.collection('Pets');
 final storageReference = FirebaseStorage.instance.ref().child('Post Pictures');
 final petstorageReference = FirebaseStorage.instance.ref().child('Pet Pictures');
 final storageProfileReference = FirebaseStorage.instance.ref().child('Profile Pictures');
@@ -20,7 +21,6 @@ final activityFeedReference = FirebaseFirestore.instance.collection('feed');
 final followersReference = FirebaseFirestore.instance.collection('followers');
 final followingReference = FirebaseFirestore.instance.collection('following');
 final timelineReference = FirebaseFirestore.instance.collection('timeline');
-final petReference = FirebaseFirestore.instance.collection('Pets');
 final DateTime timestamp = DateTime.now();
 
 class Home extends StatefulWidget {
@@ -55,7 +55,7 @@ class _Home extends State<Home> {
     return Scaffold(
       body: PageView(
         children: <Widget>[
-          TimeLine(currentUser: currentUser),
+          TimeLine(),
           SearchPage(),
           Pet(),
           PetTinder(),

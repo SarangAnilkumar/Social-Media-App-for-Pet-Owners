@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/ActivityFeed.dart';
 import 'package:untitled1/pages/Home.dart';
 import 'package:untitled1/pages/Login.dart';
@@ -22,23 +23,52 @@ class Comments extends StatefulWidget {
 
   @override
   CommentsState createState() => CommentsState(
-        postId: this.postId,
-        postOwnerId: this.postOwnerId,
-        postMediaUrl: this.postMediaUrl,
-      );
+    postId: this.postId,
+    postOwnerId: this.postOwnerId,
+    postMediaUrl: this.postMediaUrl,
+  );
 }
 
 class CommentsState extends State<Comments> {
+
   TextEditingController commentController = TextEditingController();
   final String postId;
   final String postOwnerId;
   final String postMediaUrl;
+  bool loading = false;
+  useri user;
+  String username;
+  String url;
+  String id;
 
   CommentsState({
     this.postId,
     this.postOwnerId,
     this.postMediaUrl,
   });
+
+  void initState() {
+    super.initState();
+    getUserInfo();
+  }
+
+  getUserInfo() async {
+    setState(() {
+      loading = true;
+    });
+
+    DocumentSnapshot documentSnapshot =
+    await usersReference.doc(currentUser.id).get();
+    user = useri.fromDocument(documentSnapshot);
+
+    username = user.username;
+    url = user.url;
+    id = user.id;
+
+    setState(() {
+      loading = false;
+    });
+  }
 
   buildComments() {
     return StreamBuilder(
@@ -64,20 +94,20 @@ class CommentsState extends State<Comments> {
   addComment() {
     if (commentController.text != "") {
       commentsReference.doc(postId).collection("comments").add({
-        "username": currentUser.username,
+        "username": username,
         "comment": commentController.text,
         "timestamp": timestamp,
-        "avatarUrl": currentUser.url,
-        "userId": currentUser.id,
+        "avatarUrl": url,
+        "userId": id,
       });
       bool isNotPostOwner = postOwnerId != currentUser.id;
       if (isNotPostOwner) {
         activityFeedReference.doc(postOwnerId).collection('feedItems').add({
           "type": "comment",
           "commentData": commentController.text,
-          "username": currentUser.username,
-          "userId": currentUser.id,
-          "userProfileImg": currentUser.url,
+          "username": username,
+          "userId": id,
+          "userProfileImg": url,
           "postId": postId,
           "mediaUrl": postMediaUrl,
           "timestamp": timestamp,
@@ -91,7 +121,7 @@ class CommentsState extends State<Comments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:
-          header(context, titleText: "Comments", disappearedBackButton: true),
+      header(context, titleText: "Comments", disappearedBackButton: true),
       body: Column(
         children: <Widget>[
           Expanded(child: buildComments()),
@@ -155,7 +185,7 @@ class Comment extends StatelessWidget {
             ],
           ),
           leading: TextButton(
-            onPressed: () => showProfile(context, profileId: userId),
+            onPressed: () => showProfile(context, profileId: currentUser.id),
             child: CircleAvatar(
               backgroundImage: CachedNetworkImageProvider(avatarUrl),
             ),

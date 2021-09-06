@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/Home.dart';
 import 'package:untitled1/pages/Login.dart';
 import 'package:untitled1/widgets/HeaderWidget.dart';
@@ -8,8 +7,7 @@ import 'package:untitled1/widgets/ProgressWidget.dart';
 import 'package:flutter/material.dart';
 
 class TimeLine extends StatefulWidget {
-  final useri currentUser;
-  TimeLine({this.currentUser});
+
   @override
   _TimeLineState createState() => _TimeLineState();
 }
@@ -32,7 +30,7 @@ class _TimeLineState extends State<TimeLine> {
         .orderBy("timestamp", descending: true)
         .get();
     List<Post> posts =
-        snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
+    snapshot.docs.map((doc) => Post.fromDocument(doc)).toList();
     setState(() {
       this.posts = posts;
     });

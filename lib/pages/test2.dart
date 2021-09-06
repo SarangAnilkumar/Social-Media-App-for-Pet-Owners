@@ -1,36 +1,39 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:untitled1/PAGETEST/TestHeaderWidget.dart';
-import 'package:untitled1/PAGETEST/TestLogin.dart';
-import 'package:untitled1/PAGETEST/TestPostTileWidget.dart';
-import 'package:untitled1/PAGETEST/TestPostWidget.dart';
-import 'package:untitled1/PAGETEST/TestHome.dart';
 import 'package:untitled1/PetStuff/PetProfile.dart';
 import 'package:untitled1/PetStuff/PetProfile1.dart';
 import 'package:untitled1/PetStuff/PetRegistration.dart';
+import 'package:untitled1/models/pet.dart';
 import 'package:untitled1/models/user.dart';
 import 'package:untitled1/pages/EditProfilePage.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled1/pages/Home.dart';
+import 'package:untitled1/pages/Login.dart';
+import 'package:untitled1/widgets/HeaderWidget.dart';
+import 'package:untitled1/widgets/PostTileWidget.dart';
+import 'package:untitled1/widgets/PostWidget.dart';
 import 'package:untitled1/widgets/ProgressWidget.dart';
 
-class TestProfilePage extends StatefulWidget {
+class ProfilePage extends StatefulWidget {
   final String userProfileId;
 
-  TestProfilePage({this.userProfileId});
+  ProfilePage({this.userProfileId});
 
   @override
-  _TestProfilePageState createState() => _TestProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _TestProfilePageState extends State<TestProfilePage> {
-  final String currentOnlineUserId = firebaseUser.uid;
+class _ProfilePageState extends State<ProfilePage> {
+  final String currentOnlineUserId = currentUser.id;
   bool isFollowing = false;
   bool loading = false;
   int countPost = 0;
   int followerCount = 0;
   int followingCount = 0;
-  List<TestPost> postsList = [];
+  List<Post> postsList = [];
   String postOrientation = "grid";
+
+
 
   void initState() {
     super.initState();
@@ -88,9 +91,7 @@ class _TestProfilePageState extends State<TestProfilePage> {
                   CircleAvatar(
                     radius: 40.0,
                     backgroundColor: Theme.of(context).primaryColorLight,
-                    backgroundImage: user.url== null
-                        ? AssetImage("assets/profile.jpeg")
-                        : CachedNetworkImageProvider(user.url),
+                    backgroundImage: CachedNetworkImageProvider(user.url),
 
                   ),
                   Expanded(
@@ -121,7 +122,7 @@ class _TestProfilePageState extends State<TestProfilePage> {
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.only(top: 13.0),
                 child: Text(
-                  (user.username != null) ? user.username : 'Null',
+                  user.username,
                   style: Theme.of(context)
                       .textTheme
                       .headline1
@@ -342,7 +343,7 @@ class _TestProfilePageState extends State<TestProfilePage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PetRegistration()));
+                            builder: (context) => PetRegistration(ownerUsername: currentUser.username, ownerEmail: currentUser.email, ownerName: currentUser.profileName,)));
                   },
                   child: CircleAvatar(
                     backgroundColor: Colors.grey[600],
@@ -356,7 +357,7 @@ class _TestProfilePageState extends State<TestProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => PetProfile(
-                            petType: "Siberian Husky",
+                            petType: 'Siberian Husky',
                             image: AssetImage("assets/images/Husky.jpg"),
                             petBio:
                             "The Siberian Husky is a medium-sized working sled dog breed. The breed belongs to the Spitz genetic family. It is recognizable by its thickly furred double coat, erect triangular ears, and distinctive markings, and is smaller than the similar-looking Alaskan Malamute.",
@@ -509,7 +510,7 @@ class _TestProfilePageState extends State<TestProfilePage> {
     } else if (postOrientation == "grid") {
       List<GridTile> gridTiles = [];
       postsList.forEach((eachPost) {
-        gridTiles.add(GridTile(child: TestPostTile(eachPost)));
+        gridTiles.add(GridTile(child: PostTile(eachPost)));
       });
       return GridView.count(
         crossAxisCount: 3,
@@ -541,7 +542,7 @@ class _TestProfilePageState extends State<TestProfilePage> {
       loading = false;
       countPost = querySnapshot.docs.length;
       postsList = querySnapshot.docs
-          .map((documentSnapshot) => TestPost.fromDocument(documentSnapshot))
+          .map((documentSnapshot) => Post.fromDocument(documentSnapshot))
           .toList();
     });
   }
