@@ -1,1 +1,3 @@
-
+- Social media networking application for pet owners and lovers. It allows the user to share pictures like any other social media application.
+- Users can request or offer services around pets like adoption, grooming, meetups, mating/find buddies, boarding services, etc.
+- App Development for Android and iOS using Android Studio, Flutter and Dart.
