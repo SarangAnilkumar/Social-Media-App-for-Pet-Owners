@@ -78,7 +78,7 @@ class _PetTinderState extends State<PetTinder> with TickerProviderStateMixin {
                         }
                         return Container(
                           height: MediaQuery.of(context).size.height ,
-                          child: ListView(
+                          child: Stack(
                             children: snapshot.data.docs.map((document) {
                               return tinderCards(document['url'], document['PetName'], document['DOB'].toDate(), document['PetBio'],document['PetId'], document['Interests'], document['ownerId']);
                             }).toList(),
@@ -103,7 +103,7 @@ class _PetTinderState extends State<PetTinder> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.only(bottom: 20, top: 20,),
       alignment: Alignment.center,
-      height: MediaQuery.of(context).size.height * 0.65,
+      height: MediaQuery.of(context).size.height * 0.7,
       width: MediaQuery.of(context).size.width,
       child: TinderSwapCard(
         totalNum: 1,

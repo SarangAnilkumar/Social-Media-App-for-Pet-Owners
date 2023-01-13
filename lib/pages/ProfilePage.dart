@@ -128,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: <Widget>[
                         Row(
-                          mainAxisSize: MainAxisSize.max,
+
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             createColumns("Posts", countPost),
@@ -162,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(25),
         child: Container(
           height: 75,
-          width: 100,
+          width: MediaQuery.of(context).size.width*0.25,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
               boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1),)]
@@ -281,7 +281,7 @@ class _ProfilePageState extends State<ProfilePage> {
         onPressed: performFunction,
         child: Container(
           padding: EdgeInsets.all(5.0),
-          width: 330.0,
+          width: MediaQuery.of(context).size.width*0.8,
           height: 35.0,
           child: Text(
             title,
@@ -334,7 +334,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       children: [
         Text(
-          "My Pets",
+          "Pets",
           style: Theme.of(context)
               .textTheme
               .bodyText1

@@ -68,7 +68,7 @@ class _AdoptionCardState extends State<AdoptionCard> {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Container(
-        height: screenHeight * 0.7,
+        height: screenHeight * 0.85,
         width: screenWidth * 0.85,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -178,7 +178,7 @@ class _AdoptionCardState extends State<AdoptionCard> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                       ),
-                      height: 130.0,
+                      height: screenHeight * 0.2,
                       width: screenWidth * 0.75,
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: SingleChildScrollView(

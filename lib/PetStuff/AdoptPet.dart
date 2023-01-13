@@ -87,7 +87,7 @@ class _AdoptPetState extends State<AdoptPet> {
       padding: const EdgeInsets.only(bottom: 15.0, right: 10, left: 10),
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * 0.65,
+        height: MediaQuery.of(context).size.height * 0.7,
         child: SizedBox(
           child: StreamBuilder(
               stream: FirebaseFirestore.instance.collection('adoption').where('PetType', isEqualTo: petType).snapshots(),

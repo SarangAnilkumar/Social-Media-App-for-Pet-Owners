@@ -11,6 +11,7 @@ class Pet extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(25.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(
@@ -52,7 +53,7 @@ class Pet extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20,),
+            //SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -76,7 +77,7 @@ class Pet extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20,),
+            //SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -113,8 +114,8 @@ class Pet extends StatelessWidget {
 
   button (String url, String title, Color Colors, double top, BuildContext context) {
     return Container(
-      width: 155,
-      height: 125,
+      width: MediaQuery.of(context).size.width/2.6,
+      height: MediaQuery.of(context).size.width/3.3,
       child: ClipRRect(
         child: Stack(
           children: <Widget>[

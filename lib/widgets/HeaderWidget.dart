@@ -23,7 +23,7 @@ AppBar header(context,
     ),
     automaticallyImplyLeading: disappearedBackButton ? true : false,
     title: Text(
-      isAppTitle ? "PetApp" : titleText,
+      isAppTitle ? "PetsZilla" : titleText,
       style: Theme.of(context).textTheme.bodyText1.copyWith(
         fontSize: isAppTitle ? 45.0 : 22.0,
         fontFamily: isAppTitle ? "Signatra" : "",
